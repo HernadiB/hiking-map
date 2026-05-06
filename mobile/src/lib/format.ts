@@ -116,8 +116,7 @@ export function formatDurationWithEstimate(
     return options.unavailableLabel ?? 'Not available';
   }
 
-  const estimateLabel = options.language === 'hu' ? 'becslés' : 'estimate';
-  return `${formatDuration(estimatedDurationSeconds, options)} (${estimateLabel})`;
+  return formatDuration(estimatedDurationSeconds, options);
 }
 
 export function formatDateTime(
