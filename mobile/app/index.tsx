@@ -16,7 +16,13 @@ import { AppTopBar } from '../src/components/AppTopBar';
 import { FeaturedHikeCard } from '../src/components/FeaturedHikeCard';
 import { HikeMap } from '../src/components/HikeMap';
 import { areHikeImportsEnabled, isReadOnlyMode } from '../src/lib/app-features';
-import { formatDateTime, formatDistance, formatDuration, formatElevation } from '../src/lib/format';
+import {
+  formatDateTime,
+  formatDistance,
+  formatDuration,
+  formatDurationWithEstimate,
+  formatElevation,
+} from '../src/lib/format';
 import {
   getDifficultyLabel,
   getLanguageDisplayLabel,
@@ -741,7 +747,9 @@ export default function HomeScreen() {
                 <Text style={styles.hikeCardStat}>{formatDistance(hike.distanceMeters)}</Text>
                 <Text style={styles.hikeCardStat}>{formatElevation(hike.elevationGainMeters)}</Text>
                 <Text style={styles.hikeCardStat}>
-                  {formatDuration(hike.durationSeconds, {
+                  {formatDurationWithEstimate(hike.durationSeconds, {
+                    distanceMeters: hike.distanceMeters,
+                    elevationGainMeters: hike.elevationGainMeters,
                     language,
                     unavailableLabel: t('commonNotAvailable'),
                   })}
