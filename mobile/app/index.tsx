@@ -110,6 +110,7 @@ export default function HomeScreen() {
   const [activePublishAction, setActivePublishAction] = useState<PublishAction>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isSnapshotExpanded, setIsSnapshotExpanded] = useState(() => width >= 680);
   const [isPending, startTransition] = useTransition();
   const lastImportedQueryRef = useRef<string | null>(null);
 
@@ -211,6 +212,10 @@ export default function HomeScreen() {
   useEffect(() => {
     setVisibleHikeCount(hikeRecords.length);
   }, [hikeRecords.length]);
+
+  useEffect(() => {
+    setIsSnapshotExpanded(!isMobileSnapshotOverlay);
+  }, [isMobileSnapshotOverlay]);
 
   useEffect(() => {
     const importUrl = readSingleParam(params.importUrl).trim();
@@ -515,7 +520,7 @@ export default function HomeScreen() {
               />
 
               <View
-                pointerEvents="none"
+                pointerEvents="box-none"
                 style={[
                   styles.snapshotOverlay,
                   isCompactSnapshotOverlay
@@ -525,72 +530,109 @@ export default function HomeScreen() {
                   isMobileSnapshotOverlay ? { width: mobileSnapshotWidth } : null,
                 ]}
               >
-                <View
-                  style={[
-                    styles.heroSnapshot,
-                    isCompactSnapshotOverlay
-                      ? styles.heroSnapshotCompact
-                      : styles.heroSnapshotWide,
-                    isMobileSnapshotOverlay && styles.heroSnapshotMobile,
-                  ]}
-                >
+                {isSnapshotExpanded ? (
                   <View
+                    pointerEvents="box-none"
                     style={[
-                      styles.heroSnapshotHeader,
-                      isMobileSnapshotOverlay && styles.heroSnapshotHeaderCompact,
+                      styles.heroSnapshot,
+                      isCompactSnapshotOverlay
+                        ? styles.heroSnapshotCompact
+                        : styles.heroSnapshotWide,
+                      isMobileSnapshotOverlay && styles.heroSnapshotMobile,
                     ]}
                   >
-                    <Text
+                    <View
+                      pointerEvents="box-none"
                       style={[
-                        styles.heroSnapshotTitle,
-                        isMobileSnapshotOverlay && styles.heroSnapshotTitleCompact,
+                        styles.heroSnapshotHeader,
+                        isMobileSnapshotOverlay && styles.heroSnapshotHeaderCompact,
                       ]}
                     >
-                      {t('homeCollectionSnapshot')}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.heroSnapshotMeta,
-                        isMobileSnapshotOverlay && styles.heroSnapshotMetaCompact,
-                      ]}
-                    >
-                      {visibleHikeCount} | {formatDistance(overviewMetrics.totalDistanceMeters)}
-                    </Text>
-                  </View>
+                      <View pointerEvents="none" style={styles.heroSnapshotHeaderCopy}>
+                        <Text
+                          style={[
+                            styles.heroSnapshotTitle,
+                            isMobileSnapshotOverlay && styles.heroSnapshotTitleCompact,
+                          ]}
+                        >
+                          {t('homeCollectionSnapshot')}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.heroSnapshotMeta,
+                            isMobileSnapshotOverlay && styles.heroSnapshotMetaCompact,
+                          ]}
+                        >
+                          {visibleHikeCount} | {formatDistance(overviewMetrics.totalDistanceMeters)}
+                        </Text>
+                      </View>
 
-                  <View
-                    style={[
-                      styles.heroSnapshotGrid,
-                      isMobileSnapshotOverlay && styles.heroSnapshotGridCompact,
+                      <Pressable
+                        accessibilityLabel={t('homeCollectionSnapshotHide')}
+                        accessibilityRole="button"
+                        accessibilityState={{ expanded: true }}
+                        onPress={() => setIsSnapshotExpanded(false)}
+                        style={({ pressed }) => [
+                          styles.snapshotToggleButton,
+                          styles.snapshotToggleButtonExpanded,
+                          pressed && styles.snapshotToggleButtonPressed,
+                        ]}
+                      >
+                        <Text style={[styles.snapshotToggleIcon, styles.snapshotToggleIconExpanded]}>
+                          -
+                        </Text>
+                      </Pressable>
+                    </View>
+
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        styles.heroSnapshotGrid,
+                        isMobileSnapshotOverlay && styles.heroSnapshotGridCompact,
+                      ]}
+                    >
+                      <Metric
+                        compact={isMobileSnapshotOverlay}
+                        emphasize
+                        label={t('homeTracksShown')}
+                        value={String(visibleHikeCount)}
+                      />
+                      <Metric
+                        compact={isMobileSnapshotOverlay}
+                        label={t('homeTotalDistance')}
+                        value={formatDistance(overviewMetrics.totalDistanceMeters)}
+                      />
+                      <Metric
+                        compact={isMobileSnapshotOverlay}
+                        label={t('homeTotalAscent')}
+                        value={formatElevation(overviewMetrics.totalAscentMeters)}
+                      />
+                      <Metric
+                        compact={isMobileSnapshotOverlay}
+                        label={t('homeHighestPoint')}
+                        value={
+                          overviewMetrics.highestPointMeters === null
+                            ? t('commonNotAvailable')
+                            : formatElevation(overviewMetrics.highestPointMeters)
+                        }
+                      />
+                    </View>
+                  </View>
+                ) : (
+                  <Pressable
+                    accessibilityLabel={t('homeCollectionSnapshotShow')}
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: false }}
+                    onPress={() => setIsSnapshotExpanded(true)}
+                    style={({ pressed }) => [
+                      styles.snapshotToggleButton,
+                      styles.snapshotToggleButtonCollapsed,
+                      pressed && styles.snapshotToggleButtonPressed,
                     ]}
                   >
-                    <Metric
-                      compact={isMobileSnapshotOverlay}
-                      emphasize
-                      label={t('homeTracksShown')}
-                      value={String(visibleHikeCount)}
-                    />
-                    <Metric
-                      compact={isMobileSnapshotOverlay}
-                      label={t('homeTotalDistance')}
-                      value={formatDistance(overviewMetrics.totalDistanceMeters)}
-                    />
-                    <Metric
-                      compact={isMobileSnapshotOverlay}
-                      label={t('homeTotalAscent')}
-                      value={formatElevation(overviewMetrics.totalAscentMeters)}
-                    />
-                    <Metric
-                      compact={isMobileSnapshotOverlay}
-                      label={t('homeHighestPoint')}
-                      value={
-                        overviewMetrics.highestPointMeters === null
-                          ? t('commonNotAvailable')
-                          : formatElevation(overviewMetrics.highestPointMeters)
-                      }
-                    />
-                  </View>
-                </View>
+                    <Text style={styles.snapshotToggleIcon}>+</Text>
+                  </Pressable>
+                )}
               </View>
 
               <View pointerEvents="none" style={styles.mapViewBadgeOverlay}>
@@ -824,6 +866,10 @@ const styles = StyleSheet.create({
   },
   heroSnapshotHeaderCompact: {
     alignItems: 'flex-start',
+    gap: 4,
+  },
+  heroSnapshotHeaderCopy: {
+    flex: 1,
     gap: 4,
   },
   heroSnapshotTitle: {
@@ -1101,6 +1147,44 @@ const styles = StyleSheet.create({
     left: 14,
     right: undefined,
     top: 86,
+  },
+  snapshotToggleButton: {
+    alignItems: 'center',
+    borderWidth: 1,
+    justifyContent: 'center',
+  },
+  snapshotToggleButtonExpanded: {
+    backgroundColor: palette.accentStrong,
+    borderColor: palette.accentStrong,
+    borderRadius: 12,
+    height: 34,
+    width: 34,
+  },
+  snapshotToggleButtonCollapsed: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(246, 249, 241, 0.96)',
+    borderColor: '#CFDBC7',
+    borderRadius: 18,
+    elevation: 3,
+    height: 46,
+    shadowColor: '#112118',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    width: 46,
+  },
+  snapshotToggleButtonPressed: {
+    opacity: 0.84,
+  },
+  snapshotToggleIcon: {
+    color: palette.accentStrong,
+    fontSize: 24,
+    fontWeight: '800',
+    lineHeight: 24,
+    marginTop: -2,
+  },
+  snapshotToggleIconExpanded: {
+    color: '#F4FBF6',
   },
   mapViewBadgeOverlay: {
     position: 'absolute',
