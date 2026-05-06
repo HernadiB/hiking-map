@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx version="1.1" creator="outdooractive - http://www.outdooractive.com" xmlns="http://www.topografix.com/GPX/1/1" xmlns:oa="http://www.outdooractive.com/GPX/Extensions/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.outdooractive.com/GPX/Extensions/1 https://www.outdooractive.com/schema/gpx_extensions.xsd">
+  <metadata>
+    <name>A börzsönyi vadon északi kapujában</name>
+    <author>
+      <name>Német-Bucsi Attila - Magyar Természetjáró Szövetség</name>
+    </author>
+    <link href="https://www.outdooractive.com/r/28281859"/>
+    <time>2025-10-15T12:06:43.126Z</time>
+    <extensions>
+      <oa:oaCategory>hikingTourTrail</oa:oaCategory>
+    </extensions>
+  </metadata>
+  <wpt lon="18.8933" lat="48.0196">
+    <ele>204</ele>
+    <name>Tájház (Kemence)</name>
+    <desc><![CDATA[Ha kíváncsiak vagyunk egy régi, klasszikus parasztház felépítésére, berendezésére, a benne élők mindennapi életére, akkor mindenképpen keressük fel a kemencei tájházat! A rendkívül gazdag gyűjtemény bemutatja a hagyományos paraszti háztartás minden berendezését, eszközét. Bepillanthatunk a konyhába és a funkciójában szorosan hozzá kapcsolódó kamrába, szétnézhetünk a lakószobában, és azt is megtudhatjuk, hogy milyen funkcióval rendelkezett a "tisztaszobának" nevezett helyiség. 
+ / A tárlat a falu történetével is megismertet bennünket.  / Kemencén érdemes felkeresni a Kálvária híres búcsújáró helyét, utazni az egyedi Kemencei Erdei Múzeumvasúton, túrázni a Börzsöny erdeiben, nyáron pedig a Nagy-völgyben csobbanni egyet a strandon. ]]></desc>
+    <src>outdooractive.21430.22685411</src>
+    <link href="http://www.kemence.hu/?q=node/14"/>
+    <type>Múzeum</type>
+  </wpt>
+  <wpt lon="18.895493" lat="48.021035">
+    <ele>195</ele>
+    <name>Kiss Vendégház</name>
+    <desc><![CDATA[A kétszobás ház 6 főnek biztosít kényelmes férőhelyet. Az egyik szobában két különálló ágy és egy kinyitható sarokülő, míg a hálóban egy franciaágy található. Egyéb helyiségek: felszerelt konyhasarok, előszoba-étkező és egy tusolós fürdő wc-vel. A ház önellátó, a konyhán kívül bográcsozásra, szalonnasütésre, valamint grillezésre alkalmas kiépített sütő található az udvaron. Központi elhelyezkedésének köszönhetően az élelmiszerbolt, étterem, kávézó és bankautomata is néhány perces sétával elérhető. / A község az erdei múzeumvasúton kívül számos nevezetességgel rendelkezik. A községi könyvtárban (a vármegyeháza mellett) található a gazdag gyűjteménnyel rendelkező kemencei Tájház. A falu fölötti hegyoldalon található Kálvária híres búcsújáróhely. A Nagy-völgyben a kisvasút állomása mellett található a kemencei strand. A községből számos gyalogtúra tehető a Központi-Börzsöny és a Hegyhát felé. / Szolgáltatások: / wifi / bográcshely / parkolás / Látnivalók a környéken: / Kemencei Erdei Múzeumvasút (Kemence állomás) / Kemencei Erdei Múzeumvasút - kiállítás / Tájház / Nagy-Mána / Drégelypalánk, Szondi Kiállítótér és Turisztikai Központ / Nagy-rét / Csóványosi-kilátó / Fultán-kereszt /]]></desc>
+    <src>outdooractive.21430.42295238</src>
+    <type>Vendégház</type>
+  </wpt>
+  <wpt lon="18.893802" lat="48.01331">
+    <ele>207</ele>
+    <name>Kemencei Erdei Múzeumvasút (Kemence állomás)</name>
+    <desc><![CDATA[A kemencei kisvasút esetében egy élő múzeumról beszélhetünk, hiszen egyrészt a járművek nagy része működőképes, és rendszeresen meg is fordul a szorosabb értelemben vett múzeum kapuin kívül is, másrészt pedig a kemencei végállomáson található műhelyekben újulnak meg, kelnek életre a sokszor játékszernek tűnő járművek. Az apró téglagyári mozdonyok például ebbe a kategóriába tartoznak, de furcsa szerzetek a bányamozdonyok („kulik”), vagy a mozdonyra már inkább hasonlító, de még így is meglehetősen pici MD-40-esek is. Elsőre talán furcsa, de üzemelnek itt villamosmozdonyok is: az akkumulátoros bányamozdonyokat elsősorban a telepen belüli tolatási mozgásokra használják, de munkavonatokkal rendszeresen, menetrendszerinti vonatokkal alkalmanként a nyílt vonalon is előfordulnak. / A sok jármű mellett egy kis játszótér fogadja a kisebbeket, egy régi műhelyből kialakított kis, elsősorban a kemencei (és a többi börzsönyi) kisvasút történetét bemutató kiállítást találunk itt. / Közeli látnivaló: / Az egykori vármegyeháza ma iskolaként üzemel (Kemence 1752-től 1806-ig Hont vármegye székhelye volt). / A kisvasút oldala a Természetjáron itt érhető el.]]></desc>
+    <src>outdooractive.21430.38906519</src>
+    <link href="https://www.kisvasut.hu/kemence"/>
+    <type>Vasútállomás</type>
+  </wpt>
+  <wpt lon="18.893577" lat="48.013466">
+    <ele>206</ele>
+    <name>Kemencei Erdei Múzeumvasút - kiállítás</name>
+    <desc><![CDATA[Az első vasútvonalat 1910-ben építették a kitermelt fa leszállítására, Az '50-es évekre már több mint 80 kilométernyi hálózatot hoztak létre. A csarnavölgyi főág építése 1913-ban kezdődött. Eleinte hegymenetben a kocsikat  lovak vontatták, míg lefelé a fával megrakott szerelvények saját terhüknél fogva gurultak le. Ez volt az úgynevezett görpályás üzemmód. Az 1990-es évek elejéig a hálózat nagy részét felszámolták, majd civil kezdeményezésre ismét életre keltették: 2000-ben megindult rajta a személyszállítás. A vonatok kora tavasztól késő őszig közlekednek. Működtetésüket - az országban egyedüliként - önkéntes munkával oldják meg. / A végállomáson kialakított múzeumban fényképek, régi térképek és eszközök segítségével ismerkedhettek meg a kisvasút múltjával és jelenével. A bemutató része egy korabeli kovácsműhely is, a peron mellett pedig közel harmincféle kisvasúti szerelvény, mozdony, csille tekinthető meg.]]></desc>
+    <src>outdooractive.21430.22642824</src>
+    <link href="http://kisvasut.hu/kemence"/>
+    <type>Múzeum</type>
+  </wpt>
+  <wpt lon="18.891548" lat="48.008616">
+    <ele>219</ele>
+    <name>Kemencei Erdei Múzeumvasút (Csarnapuszta megállóhely)</name>
+    <desc><![CDATA[A megállóhely közvetlenül a Királyháza-Diósjenő felé vezető út mellett van. A környéken elsősorban nyaralókat, rendezett kerteket találunk. A megállóhelyen található egy esőbeálló, amely kedvezőtlen időjárás esetén menedéket nyújthat a vonat érkezéséig. / Közeli látnivalók: / A Kemencei Erdei Múzeumvasút kemencei végállomásán kisvasúti múzeum várja az érdeklődőket. / A kisvasút oldala a Természetjáron itt érhető el.]]></desc>
+    <src>outdooractive.21430.38778045</src>
+    <link href="https://www.kisvasut.hu/kemence"/>
+    <type>Vasútállomás</type>
+  </wpt>
+  <wpt lon="18.896656" lat="47.981735">
+    <ele>304</ele>
+    <name>Kemencei Erdei Múzeumvasút (Feketevölgy állomás)</name>
+    <desc><![CDATA[Az állomás jelenleg a kisvasút „felső” végállomása, azonban ez a múltban korántsem volt így. A sínpárok továbbvezettek a Csarna-patak mentén déli irányba, hogy aztán szétágazzanak az egyes völgytorkolatokban, feltárva a Börzsöny belsejét: a Nagy-Hideg-hegytől északra, a Csóványostól, Magosfától nyugatra eső területeket. A mai végállomástól gyalogosan továbbindulva a K turistajelzésen több kilométeren keresztül követhető a hol jobb, hol rosszabb állapotban lévő egykori vasúti pálya, melynek helyrehozása bár tervbe van véve, jelenleg nem sok esély látszik rá. / Közeli látnivalók: / Fekete-kút, egy közeli forrás. / Feketevölgy panzió, szállás- és étkezési lehetőséggel. / A kisvasút használaton kívüli pályája a völgyben. / A kisvasút oldala a Természetjáron itt érhető el.]]></desc>
+    <src>outdooractive.21430.38916837</src>
+    <link href="https://www.kisvasut.hu/kemence"/>
+    <type>Vasútállomás</type>
+  </wpt>
+  <wpt lon="18.895983" lat="47.979384">
+    <ele>321</ele>
+    <name>Fekete-kút (Fekete István-forrás)</name>
+    <desc><![CDATA[A Kemencei kisvasút végállomása és a Feketevölgyi panzió közelében, a vadregényes Csarna-völgy bejáratánál találjuk a Fekete-kutat. A forrás a nevét a Fekete- vagy Csarna-patakról kapta, de az 1970-es évek végén a börzsönyi kötődésű Fekete István íróról is elnevezték. A foglalás emléktábláján az áll, hogy a 20. század elején készült a forrás kőépítménye. A kút mellett pihenőhelyet is kialakítottak: néhány fapad vesz körbe egy terméskőből épült tűzrakó helyet, a táblán a börzsönyi erdőkről olvashatunk. / A forrás állapota leromlott, romokban áll, víznyerésre nem alkalmas. A kútból szivárgó víz a Csarna-patakot táplálja. / A közvetlen közelben futott egykor a kemencei kisvasút, amelynek ma már csak a villámárvizek által elmosott maradványait láthatjuk.]]></desc>
+    <src>outdooractive.21430.806525742</src>
+    <type>Forrás</type>
+  </wpt>
+  <wpt lon="18.900345" lat="48.000104">
+    <ele>242</ele>
+    <name>Kemencei Erdei Múzeumvasút (Godóvár állomás)</name>
+    <desc><![CDATA[Az 574 méter magas hegyen lévő várat – melynek többnyire már csak a sáncai ismerhetők fel, bár helyenként még a falak egy része is áll – a hagyomány szerint a Hont-Pázmány nemzetségből származó Godó építette. Később többször gazdát cserélt az Árpád-korban, majd 1293-tól egészen 1945-ig az esztergomi érsek birtokolta a területet. A várat a közelben lévő börzsönyi szintezési főalappont mellett az aszfaltútról letérő Z jelzésen lehet megközelíteni. / Közeli látnivalók:  / Godóvár / Nagyvölgy strand egy igazán családias hangulatú kis fürdőhely. / Kemencei Ifjúsági Tábor: szálláslehetőség faházakban, de az sem akadály, ha valaki sátrat szeretne verni a fűben. / A kisvasút oldala a Természetjáron itt érhető el.]]></desc>
+    <src>outdooractive.21430.38617907</src>
+    <link href="https://www.kisvasut.hu/kemence"/>
+    <type>Vasútállomás</type>
+  </wpt>
+  <wpt lon="18.897923" lat="48.001409">
+    <ele>233</ele>
+    <name>Kemencei Erdei Múzeumvasút (Kőrózsa megállóhely)</name>
+    <desc><![CDATA[A megállóhely közvetlenül a Királyháza-Diósjenő felé vezető út mellett található. Nevét az út mellett álló Kőrózsa panzióról kapta, ahol étterem is üzemel. A patak másik partjára híd vezet át, egy egykori sípálya alsó végénél tűzrakóhely várja a turistákat. / Közeli látnivalók: / Feketevölgy panzió, szállás- és étkezési lehetőséggel. / A kisvasút használaton kívüli pályája a völgyben. / A kisvasút oldala a Természetjáron itt érhető el.]]></desc>
+    <src>outdooractive.21430.38916822</src>
+    <link href="https://www.kisvasut.hu/kemence"/>
+    <type>Vasútállomás</type>
+  </wpt>
+  <trk>
+    <name>A börzsönyi vadon északi kapujában</name>
+    <desc>Túránkkal belekóstolunk a vulkáni hegység vadregényes világába, megízlelve a sűrű rengetegek, mohos tölgyesek, napfényes hegyoldalak és árnyas patakvölgyek hangulatát.</desc>
+    <type>hikingTourTrail</type>
+    <trkseg>
+      <trkpt lat="48.013909" lon="18.8937">
+        <ele>205.70186</ele>
+      </trkpt>
+      <trkpt lat="48.013503" lon="18.8932">
+        <ele>206.55169</ele>
+      </trkpt>
+      <trkpt lat="48.012526" lon="18.892575">
+        <ele>208.84709</ele>
+      </trkpt>
+      <trkpt lat="48.011926" lon="18.892491">
+        <ele>212.53619</ele>
+      </trkpt>
+      <trkpt lat="48.01158" lon="18.892435">
+        <ele>216.61314</ele>
+      </trkpt>
+      <trkpt lat="48.011006" lon="18.891917">
+        <ele>217.52942</ele>
+      </trkpt>
+      <trkpt lat="48.010247" lon="18.891471">
+        <ele>215.19502</ele>
+      </trkpt>
+      <trkpt lat="48.00881" lon="18.891569">
+        <ele>220.7858</ele>
+      </trkpt>
+      <trkpt lat="48.008542" lon="18.891156">
+        <ele>216.14473</ele>
+      </trkpt>
+      <trkpt lat="48.00841" lon="18.891002">
+        <ele>215.95505</ele>
+      </trkpt>
+      <trkpt lat="48.007828" lon="18.890558">
+        <ele>218.66642</ele>
+      </trkpt>
+      <trkpt lat="48.007411" lon="18.890316">
+        <ele>222.05977</ele>
+      </trkpt>
+      <trkpt lat="48.006347" lon="18.890022">
+        <ele>227.31812</ele>
+      </trkpt>
+      <trkpt lat="48.003956" lon="18.889489">
+        <ele>252.92755</ele>
+      </trkpt>
+      <trkpt lat="48.002933" lon="18.889149">
+        <ele>262.92725</ele>
+      </trkpt>
+      <trkpt lat="48.002634" lon="18.888944">
+        <ele>266.95157</ele>
+      </trkpt>
+      <trkpt lat="48.002192" lon="18.888965">
+        <ele>272.80399</ele>
+      </trkpt>
+      <trkpt lat="48.00179" lon="18.888869">
+        <ele>277.92371</ele>
+      </trkpt>
+      <trkpt lat="48.001737" lon="18.88827">
+        <ele>276.7845</ele>
+      </trkpt>
+      <trkpt lat="48.001478" lon="18.888126">
+        <ele>280.6126</ele>
+      </trkpt>
+      <trkpt lat="48.001112" lon="18.888049">
+        <ele>286.78451</ele>
+      </trkpt>
+      <trkpt lat="48.000944" lon="18.887869">
+        <ele>290.1032</ele>
+      </trkpt>
+      <trkpt lat="48.000798" lon="18.887402">
+        <ele>293.98664</ele>
+      </trkpt>
+      <trkpt lat="48.000618" lon="18.887267">
+        <ele>298.36212</ele>
+      </trkpt>
+      <trkpt lat="48.000168" lon="18.886401">
+        <ele>305.96945</ele>
+      </trkpt>
+      <trkpt lat="47.999155" lon="18.887084">
+        <ele>325.19109</ele>
+      </trkpt>
+      <trkpt lat="47.998914" lon="18.887473">
+        <ele>334.48762</ele>
+      </trkpt>
+      <trkpt lat="47.998491" lon="18.887761">
+        <ele>344.17564</ele>
+      </trkpt>
+      <trkpt lat="47.998125" lon="18.887924">
+        <ele>350.2824</ele>
+      </trkpt>
+      <trkpt lat="47.99774" lon="18.888491">
+        <ele>362.1375</ele>
+      </trkpt>
+      <trkpt lat="47.997618" lon="18.889019">
+        <ele>369.26528</ele>
+      </trkpt>
+      <trkpt lat="47.997426" lon="18.889277">
+        <ele>373.93646</ele>
+      </trkpt>
+      <trkpt lat="47.997467" lon="18.88995">
+        <ele>380.37707</ele>
+      </trkpt>
+      <trkpt lat="47.997602" lon="18.890643">
+        <ele>376.00381</ele>
+      </trkpt>
+      <trkpt lat="47.997566" lon="18.891016">
+        <ele>374.53129</ele>
+      </trkpt>
+      <trkpt lat="47.997182" lon="18.891312">
+        <ele>380.74678</ele>
+      </trkpt>
+      <trkpt lat="47.99491" lon="18.89266">
+        <ele>396.78973</ele>
+      </trkpt>
+      <trkpt lat="47.99474" lon="18.892588">
+        <ele>397.87006</ele>
+      </trkpt>
+      <trkpt lat="47.993304" lon="18.891771">
+        <ele>402.23601</ele>
+      </trkpt>
+      <trkpt lat="47.992814" lon="18.891323">
+        <ele>403.15691</ele>
+      </trkpt>
+      <trkpt lat="47.992395" lon="18.890737">
+        <ele>406.56916</ele>
+      </trkpt>
+      <trkpt lat="47.992276" lon="18.889521">
+        <ele>411.01604</ele>
+      </trkpt>
+      <trkpt lat="47.992328" lon="18.888896">
+        <ele>410.61817</ele>
+      </trkpt>
+      <trkpt lat="47.992103" lon="18.889529">
+        <ele>414.40751</ele>
+      </trkpt>
+      <trkpt lat="47.991995" lon="18.890222">
+        <ele>414.73389</ele>
+      </trkpt>
+      <trkpt lat="47.991876" lon="18.89075">
+        <ele>416.51727</ele>
+      </trkpt>
+      <trkpt lat="47.991666" lon="18.891415">
+        <ele>416.58288</ele>
+      </trkpt>
+      <trkpt lat="47.991486" lon="18.89181">
+        <ele>416.50028</ele>
+      </trkpt>
+      <trkpt lat="47.991319" lon="18.892182">
+        <ele>416.32616</ele>
+      </trkpt>
+      <trkpt lat="47.991128" lon="18.89234">
+        <ele>417.09163</ele>
+      </trkpt>
+      <trkpt lat="47.991" lon="18.892624">
+        <ele>415.15298</ele>
+      </trkpt>
+      <trkpt lat="47.990836" lon="18.892734">
+        <ele>414.70264</ele>
+      </trkpt>
+      <trkpt lat="47.989804" lon="18.89355">
+        <ele>396.01071</ele>
+      </trkpt>
+      <trkpt lat="47.989315" lon="18.893645">
+        <ele>392.50567</ele>
+      </trkpt>
+      <trkpt lat="47.988931" lon="18.893932">
+        <ele>383.14897</ele>
+      </trkpt>
+      <trkpt lat="47.988609" lon="18.893974">
+        <ele>383.48433</ele>
+      </trkpt>
+      <trkpt lat="47.988383" lon="18.894016">
+        <ele>383.58467</ele>
+      </trkpt>
+      <trkpt lat="47.988194" lon="18.894057">
+        <ele>383.36069</ele>
+      </trkpt>
+      <trkpt lat="47.988072" lon="18.894231">
+        <ele>378.63016</ele>
+      </trkpt>
+      <trkpt lat="47.987933" lon="18.894515">
+        <ele>371.6115</ele>
+      </trkpt>
+      <trkpt lat="47.987776" lon="18.894647">
+        <ele>369.41649</ele>
+      </trkpt>
+      <trkpt lat="47.987545" lon="18.894687">
+        <ele>369.85646</ele>
+      </trkpt>
+      <trkpt lat="47.987363" lon="18.894853">
+        <ele>366.25504</ele>
+      </trkpt>
+      <trkpt lat="47.986523" lon="18.895169">
+        <ele>355.63594</ele>
+      </trkpt>
+      <trkpt lat="47.985888" lon="18.895411">
+        <ele>347.39477</ele>
+      </trkpt>
+      <trkpt lat="47.984874" lon="18.895702">
+        <ele>330.286</ele>
+      </trkpt>
+      <trkpt lat="47.984739" lon="18.895741">
+        <ele>328.09904</ele>
+      </trkpt>
+      <trkpt lat="47.984053" lon="18.895972">
+        <ele>317.87413</ele>
+      </trkpt>
+      <trkpt lat="47.983795" lon="18.896094">
+        <ele>313.80061</ele>
+      </trkpt>
+      <trkpt lat="47.983558" lon="18.896202">
+        <ele>310.92975</ele>
+      </trkpt>
+      <trkpt lat="47.983211" lon="18.896531">
+        <ele>302.56484</ele>
+      </trkpt>
+      <trkpt lat="47.983175" lon="18.896688">
+        <ele>299.91369</ele>
+      </trkpt>
+      <trkpt lat="47.983217" lon="18.896816">
+        <ele>298.55592</ele>
+      </trkpt>
+      <trkpt lat="47.983167" lon="18.896944">
+        <ele>297.96813</ele>
+      </trkpt>
+      <trkpt lat="47.982701" lon="18.896928">
+        <ele>299.31404</ele>
+      </trkpt>
+      <trkpt lat="47.981728" lon="18.896697">
+        <ele>303.75028</ele>
+      </trkpt>
+      <trkpt lat="47.981522" lon="18.896689">
+        <ele>305.12057</ele>
+      </trkpt>
+      <trkpt lat="47.981338" lon="18.896766">
+        <ele>307.287</ele>
+      </trkpt>
+      <trkpt lat="47.981143" lon="18.896757">
+        <ele>308.78145</ele>
+      </trkpt>
+      <trkpt lat="47.980721" lon="18.896656">
+        <ele>312.22987</ele>
+      </trkpt>
+      <trkpt lat="47.980294" lon="18.896506">
+        <ele>316.41537</ele>
+      </trkpt>
+      <trkpt lat="47.980023" lon="18.896344">
+        <ele>318.62285</ele>
+      </trkpt>
+      <trkpt lat="47.979828" lon="18.896134">
+        <ele>319.24782</ele>
+      </trkpt>
+      <trkpt lat="47.979722" lon="18.896197">
+        <ele>320.02447</ele>
+      </trkpt>
+      <trkpt lat="47.979819" lon="18.896146">
+        <ele>319.3101</ele>
+      </trkpt>
+      <trkpt lat="47.979997" lon="18.896346">
+        <ele>318.88992</ele>
+      </trkpt>
+      <trkpt lat="47.980275" lon="18.896526">
+        <ele>316.7956</ele>
+      </trkpt>
+      <trkpt lat="47.980698" lon="18.896673">
+        <ele>312.6763</ele>
+      </trkpt>
+      <trkpt lat="47.981117" lon="18.896777">
+        <ele>309.29606</ele>
+      </trkpt>
+      <trkpt lat="47.981336" lon="18.896799">
+        <ele>307.79801</ele>
+      </trkpt>
+      <trkpt lat="47.981503" lon="18.896717">
+        <ele>305.48081</ele>
+      </trkpt>
+      <trkpt lat="47.981753" lon="18.896718">
+        <ele>303.72875</ele>
+      </trkpt>
+      <trkpt lat="47.982686" lon="18.896944">
+        <ele>299.45575</ele>
+      </trkpt>
+      <trkpt lat="47.983143" lon="18.896983">
+        <ele>297.95123</ele>
+      </trkpt>
+      <trkpt lat="47.983165" lon="18.89724">
+        <ele>298.36011</ele>
+      </trkpt>
+      <trkpt lat="47.983303" lon="18.89724">
+        <ele>297.54516</ele>
+      </trkpt>
+      <trkpt lat="47.983457" lon="18.897366">
+        <ele>297.63016</ele>
+      </trkpt>
+      <trkpt lat="47.983524" lon="18.897549">
+        <ele>299.24624</ele>
+      </trkpt>
+      <trkpt lat="47.983496" lon="18.897853">
+        <ele>304.03854</ele>
+      </trkpt>
+      <trkpt lat="47.983438" lon="18.898118">
+        <ele>309.36239</ele>
+      </trkpt>
+      <trkpt lat="47.983189" lon="18.898636">
+        <ele>322.09296</ele>
+      </trkpt>
+      <trkpt lat="47.983044" lon="18.898863">
+        <ele>329.2125</ele>
+      </trkpt>
+      <trkpt lat="47.982859" lon="18.899066">
+        <ele>336.23787</ele>
+      </trkpt>
+      <trkpt lat="47.982717" lon="18.899316">
+        <ele>342.81429</ele>
+      </trkpt>
+      <trkpt lat="47.982688" lon="18.899578">
+        <ele>347.33485</ele>
+      </trkpt>
+      <trkpt lat="47.982815" lon="18.900397">
+        <ele>362.67886</ele>
+      </trkpt>
+      <trkpt lat="47.982773" lon="18.900897">
+        <ele>373.57868</ele>
+      </trkpt>
+      <trkpt lat="47.982621" lon="18.901487">
+        <ele>386.35941</ele>
+      </trkpt>
+      <trkpt lat="47.982483" lon="18.902216">
+        <ele>406.41581</ele>
+      </trkpt>
+      <trkpt lat="47.982765" lon="18.902111">
+        <ele>400.42791</ele>
+      </trkpt>
+      <trkpt lat="47.983033" lon="18.901911">
+        <ele>394.63562</ele>
+      </trkpt>
+      <trkpt lat="47.983597" lon="18.901582">
+        <ele>391.4922</ele>
+      </trkpt>
+      <trkpt lat="47.983703" lon="18.901335">
+        <ele>388.54186</ele>
+      </trkpt>
+      <trkpt lat="47.983827" lon="18.900887">
+        <ele>382.0096</ele>
+      </trkpt>
+      <trkpt lat="47.983986" lon="18.90066">
+        <ele>380.09085</ele>
+      </trkpt>
+      <trkpt lat="47.984182" lon="18.900518">
+        <ele>379.37512</ele>
+      </trkpt>
+      <trkpt lat="47.984425" lon="18.900433">
+        <ele>377.98909</ele>
+      </trkpt>
+      <trkpt lat="47.984701" lon="18.90045">
+        <ele>376.73013</ele>
+      </trkpt>
+      <trkpt lat="47.985176" lon="18.900564">
+        <ele>375.63122</ele>
+      </trkpt>
+      <trkpt lat="47.986962" lon="18.900777">
+        <ele>352.64407</ele>
+      </trkpt>
+      <trkpt lat="47.987861" lon="18.901115">
+        <ele>343.09797</ele>
+      </trkpt>
+      <trkpt lat="47.98957" lon="18.90196">
+        <ele>331.0025</ele>
+      </trkpt>
+      <trkpt lat="47.990143" lon="18.902081">
+        <ele>328.19616</ele>
+      </trkpt>
+      <trkpt lat="47.990523" lon="18.902081">
+        <ele>325.93819</ele>
+      </trkpt>
+      <trkpt lat="47.990902" lon="18.90221">
+        <ele>324.23526</ele>
+      </trkpt>
+      <trkpt lat="47.991439" lon="18.902541">
+        <ele>320.85412</ele>
+      </trkpt>
+      <trkpt lat="47.991918" lon="18.903077">
+        <ele>318.51147</ele>
+      </trkpt>
+      <trkpt lat="47.992387" lon="18.903254">
+        <ele>316.3086</ele>
+      </trkpt>
+      <trkpt lat="47.992857" lon="18.903518">
+        <ele>310.95133</ele>
+      </trkpt>
+      <trkpt lat="47.9933" lon="18.903398">
+        <ele>309.31378</ele>
+      </trkpt>
+      <trkpt lat="47.993619" lon="18.903209">
+        <ele>308.94564</ele>
+      </trkpt>
+      <trkpt lat="47.994001" lon="18.903106">
+        <ele>305.30297</ele>
+      </trkpt>
+      <trkpt lat="47.994421" lon="18.90306">
+        <ele>296.42835</ele>
+      </trkpt>
+      <trkpt lat="47.994848" lon="18.902846">
+        <ele>287.54321</ele>
+      </trkpt>
+      <trkpt lat="47.995244" lon="18.902539">
+        <ele>281.30824</ele>
+      </trkpt>
+      <trkpt lat="47.99584" lon="18.902387">
+        <ele>268.7338</ele>
+      </trkpt>
+      <trkpt lat="47.996706" lon="18.902672">
+        <ele>250.52027</ele>
+      </trkpt>
+      <trkpt lat="47.997048" lon="18.902701">
+        <ele>248.04268</ele>
+      </trkpt>
+      <trkpt lat="47.997059" lon="18.902834">
+        <ele>247.34596</ele>
+      </trkpt>
+      <trkpt lat="47.997138" lon="18.902997">
+        <ele>246.40942</ele>
+      </trkpt>
+      <trkpt lat="47.997354" lon="18.903173">
+        <ele>245.76388</ele>
+      </trkpt>
+      <trkpt lat="47.997535" lon="18.90379">
+        <ele>248.73186</ele>
+      </trkpt>
+      <trkpt lat="47.998832" lon="18.903352">
+        <ele>249.30876</ele>
+      </trkpt>
+      <trkpt lat="47.999283" lon="18.903033">
+        <ele>249.52093</ele>
+      </trkpt>
+      <trkpt lat="47.999516" lon="18.902766">
+        <ele>249.17872</ele>
+      </trkpt>
+      <trkpt lat="47.999783" lon="18.902306">
+        <ele>247.97371</ele>
+      </trkpt>
+      <trkpt lat="48.000027" lon="18.901752">
+        <ele>246.38107</ele>
+      </trkpt>
+      <trkpt lat="48.000475" lon="18.900308">
+        <ele>248.73633</ele>
+      </trkpt>
+      <trkpt lat="48.000736" lon="18.899628">
+        <ele>247.84346</ele>
+      </trkpt>
+      <trkpt lat="48.001661" lon="18.897663">
+        <ele>233.1067</ele>
+      </trkpt>
+      <trkpt lat="48.001748" lon="18.897517">
+        <ele>232.68585</ele>
+      </trkpt>
+      <trkpt lat="48.001854" lon="18.897395">
+        <ele>232.3151</ele>
+      </trkpt>
+      <trkpt lat="48.003453" lon="18.896158">
+        <ele>233.39306</ele>
+      </trkpt>
+      <trkpt lat="48.005779" lon="18.893591">
+        <ele>228.62294</ele>
+      </trkpt>
+      <trkpt lat="48.006336" lon="18.892996">
+        <ele>227.03906</ele>
+      </trkpt>
+      <trkpt lat="48.006831" lon="18.892532">
+        <ele>223.43208</ele>
+      </trkpt>
+      <trkpt lat="48.007051" lon="18.892364">
+        <ele>223.75494</ele>
+      </trkpt>
+      <trkpt lat="48.007649" lon="18.892031">
+        <ele>224.74834</ele>
+      </trkpt>
+      <trkpt lat="48.008243" lon="18.891735">
+        <ele>221.10566</ele>
+      </trkpt>
+      <trkpt lat="48.008849" lon="18.891623">
+        <ele>222.01031</ele>
+      </trkpt>
+      <trkpt lat="48.010098" lon="18.891454">
+        <ele>215.92791</ele>
+      </trkpt>
+      <trkpt lat="48.010887" lon="18.89185">
+        <ele>217.23267</ele>
+      </trkpt>
+      <trkpt lat="48.011694" lon="18.892464">
+        <ele>215.05603</ele>
+      </trkpt>
+      <trkpt lat="48.012404" lon="18.892523">
+        <ele>209.53404</ele>
+      </trkpt>
+      <trkpt lat="48.013341" lon="18.893095">
+        <ele>206.88295</ele>
+      </trkpt>
+      <trkpt lat="48.013779" lon="18.893569">
+        <ele>205.77762</ele>
+        <extensions>
+          <oa:locType>routingNode</oa:locType>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

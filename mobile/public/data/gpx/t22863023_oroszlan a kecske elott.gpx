@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx version="1.1" creator="outdooractive - http://www.outdooractive.com" xmlns="http://www.topografix.com/GPX/1/1" xmlns:oa="http://www.outdooractive.com/GPX/Extensions/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.outdooractive.com/GPX/Extensions/1 https://www.outdooractive.com/schema/gpx_extensions.xsd">
+  <metadata>
+    <name>Oroszlán a kecske előtt</name>
+    <author>
+      <name>Magyar Természetjáró Szövetség - Magyar Természetjáró Szövetség</name>
+    </author>
+    <link href="https://www.outdooractive.com/r/22863023"/>
+    <time>2025-12-26T22:09:29.435Z</time>
+    <extensions>
+      <oa:oaCategory>hikingTourTrail</oa:oaCategory>
+    </extensions>
+  </metadata>
+  <wpt lon="18.999814" lat="47.535158">
+    <ele>356</ele>
+    <name>Árpád-kilátó</name>
+    <desc><![CDATA[A kilátó kőteraszon álló, részben fedett, egyesek szerint „székely stílusú”, teraszos-tornyos kőépület a Látó-hegy (vagy, ahogy a régiek németesen emlegetik, a Gugger-hegy) déli oldalán. 1929-ben épült Glück Frigyes szállodatulajdonos és városatya támogatásával; a tervező Friedrich Lóránt volt - eredetileg az épületet nádtető fedte. / A tágas teraszról szemkápráztató panorámát kapunk délkeleti irányban a fák ágai közé ékelt fővárosra. A Duna kígyózó szalagjától jobbra kiugrik a tájból a Gellért-hegy, tetején a főváros egyik jelképével, a Szabadság-szoborral. A folyó ívét követve számtalan hidat láthatunk, amik összekapcsolják a budai és a pesti oldalt. Szabad szemmel is kiszúrható az apró foltként megbújó budai vár, valamint a Parlament épülete. Távcsővel végigpásztázva a tájat számos híres épületet, fővárosi helyszínt is felfedezhetünk.  / A helyszín egyik extrája, hogy augusztus huszadikán este pazar tűzijátékot szemlélhetünk innen a város felett.  / Akár bográcsozást, sütögetést is tervezhetünk ide, hiszen 2013 végén a környékén megújultak a tűzrakó helyek, a padok, az asztalok és a hulladékgyűjtők. Lecserélték az idők során megrepedt, a kilátót létesítő Glück Frigyesre emlékező márványtáblát is.]]></desc>
+    <src>outdooractive.21430.20242025</src>
+    <type>Kilátó</type>
+  </wpt>
+  <wpt lon="19.006207" lat="47.540563">
+    <ele>290</ele>
+    <name>Fenyőgyöngye vendéglő</name>
+    <desc><![CDATA[1935-ben épült a vendéglő, melynek nyitása óta változatlan az elnevezése. Alapítójának, a János-hegyi kilátóban üzemelő vendéglő pincérének, Sztretovszky Jánosnak annyira megtetszett a környék, amikor errefelé kirándult, hogy a Szépvölgyi úton telket véve önálló vállalkozásba kezdett feleségével. A világháborúban felrobbantották a házat, ezért újjá kellett építeniük, az 1952-es államosítás után pedig alkalmazottakként dolgoztak tovább egészen a halálukig.  / Finom, házias ételekkel várják itt a vándorokat.]]></desc>
+    <src>outdooractive.21430.20263807</src>
+    <link href="http://fenyogyongye.hu"/>
+    <type>Étterem</type>
+  </wpt>
+  <wpt lon="18.99011" lat="47.542023">
+    <ele>329</ele>
+    <name>Kecske-sziklák</name>
+    <desc><![CDATA[Az Országos Kéktúra útvonala a Kecske-hegy oldalában vezet.  A Glück Frigyesről elnevezett sétányon az arra járók tekintetét először az Oroszlán-szikla vonzza magára – pedig az ösvény másik oldala is szép látványt tartogat. A kiálló dolomit-csipkék úgy pöttyözik fehérre a hegyoldalt, mintha a (kő)oroszlán elől elfutó (kő)kecskék menekültek volna oda. / Kevesen tudják, hogy ezek a felső-triászban kialakult dolomitrögök keletkezésüket tekintve egy csoportot alkotnak az Oroszlán-szikla utólagosan formára igazított-faragott tömbjével. Talán ezzel magyarázható, hogy a helyiek a térképen szereplő Kecske-sziklák megnevezés helyett még ma is Oroszlán-szikláknak hívják a területet.   / Egy érdekesség, hogy ha a kőoroszlán egyenesen felfutna az előtte lévő emelkedőn, épp a Kecske-hegy 383 méteres csúcsára jutna, ahonnan egyébként pazar körpanoráma nyílik a környékre. A sziklákról szép a kilátás a János- és a Hárs-hegyre, de a Pilis is megmutatkozik a közelben. A hegytetőről, illetve az annak túloldalába harapott kőfejtőtől a Hármashatár-hegyre látni rá. Utóbbi helyre a Szépvölgyi-dűlő felől jelzetlen ösvények vezetnek fel, ezeken juthatunk ki a sziklák hátára is.]]></desc>
+    <src>outdooractive.21430.25107561</src>
+    <type>Magaslat</type>
+  </wpt>
+  <wpt lon="18.989312" lat="47.542448">
+    <ele>312</ele>
+    <name>Oroszlán-szikla</name>
+    <desc><![CDATA[Az amúgy is egy ülő oroszlánra emlékeztető sziklatömböt nagyjából száz évvel ezelőtt, a sétány építésekor némi utánfaragással méginkább hasonlóvá tették az igazi oroszlánhoz. Kár, hogy letört a feje, de a hasonlatosság még így is feltűnő! Öregebb turisták azt mesélik, hogy az oroszok robbantották le 1946-ban, hogy a járművek elférjenek tőle.]]></desc>
+    <src>outdooractive.21430.20249218</src>
+    <type>Földtani érték</type>
+  </wpt>
+  <wpt lon="18.988909" lat="47.533867">
+    <ele>255</ele>
+    <name>Kőkapu</name>
+    <desc><![CDATA[Látványos sziklakompozíció fogad a Vaskapu-hegyet kerülő erdei sétány mellett, pont félúton a Nagybányai és a Görgényi út között. Délről érkezve már az Apáthy-szikla kilátóbércéről megcsodálhatjuk az alant húzódó Hűvösvölgyet és a környező hegyvidéket, észak felől pedig egy berácsozott barlangnyílás látható közvetlenül a hegycsúcs alatt. A Kőkapu azonban mindkét látványt ötvözi, ráadásul kényelmes, szoba méretű termével szemlélődésre csábít: mind a sziklafalak oldási formáit megvizsgálni, mind a nyugatra tekintő kilátásban gyönyörködni nagy élmény. A lenyugvó nap ráadásul besüt a sziklaboltív alá, ami különösen otthonossá varázsolja ezt a zöld lombsátorban megbújó, a vörös és az okkersárga árnyalataitól élénk sziklamenedéket. / A barlang képződésében a földtörténet rég letűnt tengerei játszottak főszerepet. Már maga a hegyet alkotó kőzet is sekélytengeri környezetben, apró mészvázas állatok összegyűlt maradványaiból cementálódott kőzetté, majd a Budai-hegység kiemelkedése során látott napvilágot. Az akkori szubtrópusi környezetben a csapadékos időjárásnak köszönhetően intenzív oldásnak volt kitéve a meleg klímán, de a drámai formákat az akkoriban a hegyet körbeölelő Pannon-tó hullámzása, abráziója faragta a kőzetbe. A sziklatest repedéseiben áramló termálvízből vastartalmú vegyületek csapódtak ki, ami vöröses és sárgás bevonattal színezi a falakat, de bőséggel gyűlt össze ez az élénkszínű mállástermék a barlang aljzatán is. A falak és a plafon a képződés intenzív körülményeinek eredményeképpen erősen oldottak, és lyukak hálózata vonul végig a jelentősebb repedések mentén. Ezeknek köszönhetően a sziklamászók kedvelt gyakorlóhelyévé vált a barlang, boltívén alkalmanként akrobatikusan mozgó sportolókat is láthatunk. / A környező sziklákon tavasszal leánykökörcsin nyílik, a környék erdőalkotó fafaja pedig a virágos kőris, ami tavasz végén fehér nászruhába öltözve ünnepélyes hangulatúvá varázsolja a helyet. Az erdőben nyár elején a foltos kontyvirág kecsesen összehajtogatott sziromlevelét fedezhetjük fel, amivel a rovarokat ejti csapdába a beporzáshoz, míg ősszel maréknyi piros bogyófüzérével hívja fel a szemlélődő turisták figyelmét. Közvetlenül a Kőkapu alatt egy régen felhagyott dolomitmurva-bánya fedezhető fel, ami mellett ösvény vezet le a Madár utcára. Ennek túlsó végén, a Kondor úton, a szemközti erdő peremén egy bekerített, évszázados libanoni cédrust csodálhatunk meg.]]></desc>
+    <src>outdooractive.21430.801876896</src>
+    <type>Földtani érték</type>
+  </wpt>
+  <wpt lon="18.986054" lat="47.53156">
+    <ele>222</ele>
+    <name>Apáthy-szikla</name>
+    <desc><![CDATA[Ahol a főváros házai felkúsztak az Ördög-árok mentén, és mohó terjeszkedésükkel bekebelezték az egykor erdővel borított, lankás hegyoldalakat, egy sziklaszirt útját állta a hódításnak, és amolyan utolsó mentsvárként dacol a várossal, otthont adva a melegkedvelő, sziklai élővilágnak. A dolomitszirt tetejének kilátóteraszára ösvény vezet, ahonnan rálátunk a vad leszakadásra, a környező karsztbokorerdőre és a hegyvidéki Budapest épületeire. A kilátópont nagy előnye, hogy a hegyoldalon kerülő kényelmes sétányon jól megközelíthető, így akár sötétedés után is gyönyörködhetünk a körülöttünk tündöklő város fényeiben. / Érdemes azonban a szikla anyagára és a rajta megtelepült növény- és állatvilágra is figyelmet szentelnünk, mert ritka értékek honolnak a házak közé ékelődött dolomitszirten. Eredetileg geológiai értékei miatt nyilvánították természetvédelmi területté az Apáthy-sziklát és közel 6 hektáros környezetét, ahol ma is közel természetes viszonyokat tapasztalhatunk. A szirt dolomitos anyaga 220 millió évvel ezelőtt keletkezett a Pangea szuperkontinens trópusi tengerében. A kőzetté vált hegygerinc tengerparti félszigetként emelkedett ki a földtani közelmúltban, aminek lenyomatai a hullámveréstől menedéket kereső fúrókagylók lyukai a kőzetfelszínen, valamint a változatos formavilág. A tenger eróziójának köszönhető a szikla számos kisebb-nagyobb ürege, boltíves áthajlása, kőfülkéje. / A környező cserszömörcés karsztbokorerdőben és a meredek felszíneken megmaradt sziklagyepen olyan, az utolsó jégkorszakot átvészelt maradványfajok élnek, mint a fokozottan védett Szent István-szegfű, a budai nyúlfarkfű, vagy a magyar gurgolya. Látványosak a hegyi árvalányhaj selymes csomói, a tavasszal pompázó tarka és törpe nőszirmok, a sárga kövirózsa merészen kapaszkodó telepei. A falakon időszakosan költ a szintén fokozottan védett bajszos sármány, a környéken sütkérezik a pannon gyík, kis szerencsével láthatunk itt atalantalepkét, nappali pávaszemet, kardos és fecskefarkú lepkét is. / Bár a sertéspestis megtépázta túlszaporodott állományát, a vaddisznók is jól érezték magukat a zegzugos hegyoldalon. Rendszerint lehetett itt hallani a „bandázó” vaddisznókondát a lakóházak szomszédságában. Az egykori Buda-Nyék falu is a szikla alatt álhatott, Árpád-kori templomának alapjait is megtalálták, de jóval többen tudnak róla, hogy királyi vadaskert működött a területen. Zsigmond király és Nagy Lajos király lánya szívesen vadászott az itteni erdőkben, ahol vadászlakot építettek. Az 1500-as években II. Ulászló és Mátyás király vadászkastélya állt a szikla alatt, melyek romjaira rá is bukkantak a szemközti lejtőn, a mai Hűvösvölgyi út 78. szám alatt. A kőkerítéssel körbevett királyi vadaskert nyomai szintén fellelhetők a környező erdőben. Vélhetően kémlelőhelynek használhatták a királyi vadászok a szirtet, ahonnan madártávlatból láthatunk rá az alant elterülő területre. A helyszín stratégiai értékét jól mutatja, hogy egy bunker is áll a sziklagerinc legmagasabb pontján. A világháború végén erre menekültek a magyar és német katonák a fővárosból, fontos lőállás volt az ormon. A szikla neve a terület egykori birtokosától származik, ugyanis Apáthy Gábornak majorja volt a közelben.]]></desc>
+    <src>outdooractive.21430.22913249</src>
+    <type>Kilátóhely</type>
+  </wpt>
+  <trk>
+    <name>Oroszlán a kecske előtt</name>
+    <desc>A könnyed túra során lajstromozzuk a főváros budai oldalára nyíló nagyszerű panorámákat: az Árpád-kilátót, a Glück Frigyes út egyes pontjait, a Kecske-hegyet és az Apáthy-sziklát. Közben pedig széles, hangulatos erdei sétányokon, a budapesti természetjárás történelmi útvonalain gyalogolunk.</desc>
+    <type>hikingTourTrail</type>
+    <trkseg>
+      <trkpt lat="47.533695" lon="18.993398">
+        <ele>277.07173</ele>
+      </trkpt>
+      <trkpt lat="47.534202" lon="18.993064">
+        <ele>278.08285</ele>
+      </trkpt>
+      <trkpt lat="47.534634" lon="18.992732">
+        <ele>275.85948</ele>
+      </trkpt>
+      <trkpt lat="47.534738" lon="18.992916">
+        <ele>275.65985</ele>
+      </trkpt>
+      <trkpt lat="47.534912" lon="18.993584">
+        <ele>281.01975</ele>
+      </trkpt>
+      <trkpt lat="47.534992" lon="18.993791">
+        <ele>285.1108</ele>
+      </trkpt>
+      <trkpt lat="47.535072" lon="18.993934">
+        <ele>288.9909</ele>
+      </trkpt>
+      <trkpt lat="47.535263" lon="18.994066">
+        <ele>295.62025</ele>
+      </trkpt>
+      <trkpt lat="47.535486" lon="18.994156">
+        <ele>303.06827</ele>
+      </trkpt>
+      <trkpt lat="47.535507" lon="18.994207">
+        <ele>304.95231</ele>
+      </trkpt>
+      <trkpt lat="47.53551" lon="18.994276">
+        <ele>306.97863</ele>
+      </trkpt>
+      <trkpt lat="47.535481" lon="18.994353">
+        <ele>308.5193</ele>
+      </trkpt>
+      <trkpt lat="47.535302" lon="18.994568">
+        <ele>310.2547</ele>
+      </trkpt>
+      <trkpt lat="47.535065" lon="18.994938">
+        <ele>314.81354</ele>
+      </trkpt>
+      <trkpt lat="47.534956" lon="18.995002">
+        <ele>314.02762</ele>
+      </trkpt>
+      <trkpt lat="47.534849" lon="18.995024">
+        <ele>312.16795</ele>
+      </trkpt>
+      <trkpt lat="47.534784" lon="18.995077">
+        <ele>312.06243</ele>
+      </trkpt>
+      <trkpt lat="47.534654" lon="18.995272">
+        <ele>314.07162</ele>
+      </trkpt>
+      <trkpt lat="47.534073" lon="18.996449">
+        <ele>330.76613</ele>
+      </trkpt>
+      <trkpt lat="47.533913" lon="18.996811">
+        <ele>332.90974</ele>
+      </trkpt>
+      <trkpt lat="47.533871" lon="18.996963">
+        <ele>333.94609</ele>
+      </trkpt>
+      <trkpt lat="47.533849" lon="18.997175">
+        <ele>336.37976</ele>
+      </trkpt>
+      <trkpt lat="47.533922" lon="18.9974">
+        <ele>340.79283</ele>
+      </trkpt>
+      <trkpt lat="47.534103" lon="18.997765">
+        <ele>345.69188</ele>
+      </trkpt>
+      <trkpt lat="47.534407" lon="18.998226">
+        <ele>349.63865</ele>
+      </trkpt>
+      <trkpt lat="47.534567" lon="18.998372">
+        <ele>351.93836</ele>
+      </trkpt>
+      <trkpt lat="47.534744" lon="18.998452">
+        <ele>354.87679</ele>
+      </trkpt>
+      <trkpt lat="47.534841" lon="18.998534">
+        <ele>356.18784</ele>
+      </trkpt>
+      <trkpt lat="47.534924" lon="18.998676">
+        <ele>356.77166</ele>
+      </trkpt>
+      <trkpt lat="47.535225" lon="18.99972">
+        <ele>357.94453</ele>
+      </trkpt>
+      <trkpt lat="47.535325" lon="18.999539">
+        <ele>360.61707</ele>
+      </trkpt>
+      <trkpt lat="47.535329" lon="18.999453">
+        <ele>360.92319</ele>
+      </trkpt>
+      <trkpt lat="47.535404" lon="18.999381">
+        <ele>362.65133</ele>
+      </trkpt>
+      <trkpt lat="47.535444" lon="18.999385">
+        <ele>363.43688</ele>
+      </trkpt>
+      <trkpt lat="47.535546" lon="18.999469">
+        <ele>365.18707</ele>
+      </trkpt>
+      <trkpt lat="47.535682" lon="18.999693">
+        <ele>366.99841</ele>
+      </trkpt>
+      <trkpt lat="47.535773" lon="18.999921">
+        <ele>367.59418</ele>
+      </trkpt>
+      <trkpt lat="47.535895" lon="19.000107">
+        <ele>368.16156</ele>
+      </trkpt>
+      <trkpt lat="47.536016" lon="19.000183">
+        <ele>368.77838</ele>
+      </trkpt>
+      <trkpt lat="47.536248" lon="19.00021">
+        <ele>369.61801</ele>
+      </trkpt>
+      <trkpt lat="47.5364" lon="19.000183">
+        <ele>369.85022</ele>
+      </trkpt>
+      <trkpt lat="47.536515" lon="19.000128">
+        <ele>369.91535</ele>
+      </trkpt>
+      <trkpt lat="47.536642" lon="18.99998">
+        <ele>370.08365</ele>
+      </trkpt>
+      <trkpt lat="47.536726" lon="18.999847">
+        <ele>370.34133</ele>
+      </trkpt>
+      <trkpt lat="47.536866" lon="18.999584">
+        <ele>370.78355</ele>
+      </trkpt>
+      <trkpt lat="47.537134" lon="18.999002">
+        <ele>369.50533</ele>
+      </trkpt>
+      <trkpt lat="47.537243" lon="18.998873">
+        <ele>367.98585</ele>
+      </trkpt>
+      <trkpt lat="47.53761" lon="18.998675">
+        <ele>362.38628</ele>
+      </trkpt>
+      <trkpt lat="47.537844" lon="18.99864">
+        <ele>358.7032</ele>
+      </trkpt>
+      <trkpt lat="47.538021" lon="18.998683">
+        <ele>355.91981</ele>
+      </trkpt>
+      <trkpt lat="47.538082" lon="18.998607">
+        <ele>355.02502</ele>
+      </trkpt>
+      <trkpt lat="47.538191" lon="18.998142">
+        <ele>353.63416</ele>
+      </trkpt>
+      <trkpt lat="47.538283" lon="18.997513">
+        <ele>351.5893</ele>
+      </trkpt>
+      <trkpt lat="47.538334" lon="18.997258">
+        <ele>349.27482</ele>
+      </trkpt>
+      <trkpt lat="47.538414" lon="18.996949">
+        <ele>345.42501</ele>
+      </trkpt>
+      <trkpt lat="47.538459" lon="18.99682">
+        <ele>343.60675</ele>
+      </trkpt>
+      <trkpt lat="47.538826" lon="18.996241">
+        <ele>337.14367</ele>
+      </trkpt>
+      <trkpt lat="47.539014" lon="18.995616">
+        <ele>334.82644</ele>
+      </trkpt>
+      <trkpt lat="47.539205" lon="18.995116">
+        <ele>335.432</ele>
+      </trkpt>
+      <trkpt lat="47.539217" lon="18.994951">
+        <ele>335.08684</ele>
+      </trkpt>
+      <trkpt lat="47.539186" lon="18.994761">
+        <ele>333.67835</ele>
+      </trkpt>
+      <trkpt lat="47.539107" lon="18.994521">
+        <ele>330.82276</ele>
+      </trkpt>
+      <trkpt lat="47.539061" lon="18.994239">
+        <ele>328.34078</ele>
+      </trkpt>
+      <trkpt lat="47.539071" lon="18.993935">
+        <ele>326.80751</ele>
+      </trkpt>
+      <trkpt lat="47.539125" lon="18.993518">
+        <ele>324.93847</ele>
+      </trkpt>
+      <trkpt lat="47.53922" lon="18.993044">
+        <ele>321.54249</ele>
+      </trkpt>
+      <trkpt lat="47.539369" lon="18.992697">
+        <ele>320.09042</ele>
+      </trkpt>
+      <trkpt lat="47.539658" lon="18.992207">
+        <ele>316.90811</ele>
+      </trkpt>
+      <trkpt lat="47.539923" lon="18.991876">
+        <ele>312.25415</ele>
+      </trkpt>
+      <trkpt lat="47.540582" lon="18.991212">
+        <ele>308.65621</ele>
+      </trkpt>
+      <trkpt lat="47.541556" lon="18.990055">
+        <ele>311.34074</ele>
+      </trkpt>
+      <trkpt lat="47.541949" lon="18.989689">
+        <ele>311.91834</ele>
+      </trkpt>
+      <trkpt lat="47.542392" lon="18.989382">
+        <ele>311.24464</ele>
+      </trkpt>
+      <trkpt lat="47.543494" lon="18.988823">
+        <ele>313.92463</ele>
+      </trkpt>
+      <trkpt lat="47.543885" lon="18.988524">
+        <ele>312.55439</ele>
+      </trkpt>
+      <trkpt lat="47.544084" lon="18.988287">
+        <ele>311.0626</ele>
+      </trkpt>
+      <trkpt lat="47.544813" lon="18.987133">
+        <ele>309.81555</ele>
+      </trkpt>
+      <trkpt lat="47.545178" lon="18.986713">
+        <ele>312.10084</ele>
+      </trkpt>
+      <trkpt lat="47.545442" lon="18.986466">
+        <ele>313.33068</ele>
+      </trkpt>
+      <trkpt lat="47.545658" lon="18.986307">
+        <ele>314.22022</ele>
+      </trkpt>
+      <trkpt lat="47.546026" lon="18.986088">
+        <ele>316.49875</ele>
+      </trkpt>
+      <trkpt lat="47.546329" lon="18.985868">
+        <ele>319.18725</ele>
+      </trkpt>
+      <trkpt lat="47.546357" lon="18.985756">
+        <ele>319.46501</ele>
+      </trkpt>
+      <trkpt lat="47.546339" lon="18.985511">
+        <ele>319.54551</ele>
+      </trkpt>
+      <trkpt lat="47.546292" lon="18.985226">
+        <ele>319.91922</ele>
+      </trkpt>
+      <trkpt lat="47.546045" lon="18.985139">
+        <ele>318.97533</ele>
+      </trkpt>
+      <trkpt lat="47.545837" lon="18.985033">
+        <ele>318.75807</ele>
+      </trkpt>
+      <trkpt lat="47.545307" lon="18.985325">
+        <ele>314.37614</ele>
+      </trkpt>
+      <trkpt lat="47.545033" lon="18.985434">
+        <ele>311.84364</ele>
+      </trkpt>
+      <trkpt lat="47.54476" lon="18.985785">
+        <ele>306.25715</ele>
+      </trkpt>
+      <trkpt lat="47.54465" lon="18.98585">
+        <ele>304.27762</ele>
+      </trkpt>
+      <trkpt lat="47.544422" lon="18.98587">
+        <ele>300.5927</ele>
+      </trkpt>
+      <trkpt lat="47.543639" lon="18.985709">
+        <ele>290.26121</ele>
+      </trkpt>
+      <trkpt lat="47.543103" lon="18.985976">
+        <ele>281.85627</ele>
+      </trkpt>
+      <trkpt lat="47.542683" lon="18.986023">
+        <ele>277.44382</ele>
+      </trkpt>
+      <trkpt lat="47.542447" lon="18.986094">
+        <ele>274.53319</ele>
+      </trkpt>
+      <trkpt lat="47.541409" lon="18.987118">
+        <ele>264.17151</ele>
+      </trkpt>
+      <trkpt lat="47.541416" lon="18.987126">
+        <ele>264.26704</ele>
+      </trkpt>
+      <trkpt lat="47.540602" lon="18.987989">
+        <ele>262.42307</ele>
+      </trkpt>
+      <trkpt lat="47.540311" lon="18.988208">
+        <ele>260.31792</ele>
+      </trkpt>
+      <trkpt lat="47.540119" lon="18.988402">
+        <ele>259.12403</ele>
+      </trkpt>
+      <trkpt lat="47.539945" lon="18.98863">
+        <ele>258.82242</ele>
+      </trkpt>
+      <trkpt lat="47.539957" lon="18.988872">
+        <ele>261.4036</ele>
+      </trkpt>
+      <trkpt lat="47.539954" lon="18.989427">
+        <ele>266.33503</ele>
+      </trkpt>
+      <trkpt lat="47.539857" lon="18.989777">
+        <ele>267.24886</ele>
+      </trkpt>
+      <trkpt lat="47.539804" lon="18.990123">
+        <ele>269.2199</ele>
+      </trkpt>
+      <trkpt lat="47.539711" lon="18.990397">
+        <ele>269.79967</ele>
+      </trkpt>
+      <trkpt lat="47.539571" lon="18.990615">
+        <ele>270.28831</ele>
+      </trkpt>
+      <trkpt lat="47.539512" lon="18.990651">
+        <ele>270.08744</ele>
+      </trkpt>
+      <trkpt lat="47.539435" lon="18.990771">
+        <ele>271.21265</ele>
+      </trkpt>
+      <trkpt lat="47.539267" lon="18.990837">
+        <ele>270.4615</ele>
+      </trkpt>
+      <trkpt lat="47.538912" lon="18.991038">
+        <ele>269.28175</ele>
+      </trkpt>
+      <trkpt lat="47.538643" lon="18.991128">
+        <ele>266.28912</ele>
+      </trkpt>
+      <trkpt lat="47.538514" lon="18.991133">
+        <ele>263.99243</ele>
+      </trkpt>
+      <trkpt lat="47.538435" lon="18.991192">
+        <ele>263.74267</ele>
+      </trkpt>
+      <trkpt lat="47.538098" lon="18.991557">
+        <ele>264.96805</ele>
+      </trkpt>
+      <trkpt lat="47.537763" lon="18.992061">
+        <ele>269.468</ele>
+      </trkpt>
+      <trkpt lat="47.537448" lon="18.992432">
+        <ele>272.15924</ele>
+      </trkpt>
+      <trkpt lat="47.537212" lon="18.992774">
+        <ele>276.62541</ele>
+      </trkpt>
+      <trkpt lat="47.53716" lon="18.992818">
+        <ele>277.22512</ele>
+      </trkpt>
+      <trkpt lat="47.53712" lon="18.992823">
+        <ele>277.24918</ele>
+      </trkpt>
+      <trkpt lat="47.536981" lon="18.992772">
+        <ele>276.39796</ele>
+      </trkpt>
+      <trkpt lat="47.536484" lon="18.992736">
+        <ele>275.34818</ele>
+      </trkpt>
+      <trkpt lat="47.535772" lon="18.992786">
+        <ele>275.08953</ele>
+      </trkpt>
+      <trkpt lat="47.534738" lon="18.992916">
+        <ele>275.65985</ele>
+      </trkpt>
+      <trkpt lat="47.534634" lon="18.992732">
+        <ele>275.85948</ele>
+      </trkpt>
+      <trkpt lat="47.534604" lon="18.992554">
+        <ele>275.84361</ele>
+      </trkpt>
+      <trkpt lat="47.534601" lon="18.992376">
+        <ele>275.80881</ele>
+      </trkpt>
+      <trkpt lat="47.534628" lon="18.992153">
+        <ele>275.87662</ele>
+      </trkpt>
+      <trkpt lat="47.534771" lon="18.991896">
+        <ele>273.22659</ele>
+      </trkpt>
+      <trkpt lat="47.534816" lon="18.991655">
+        <ele>270.85969</ele>
+      </trkpt>
+      <trkpt lat="47.534749" lon="18.991003">
+        <ele>265.50079</ele>
+      </trkpt>
+      <trkpt lat="47.534773" lon="18.990828">
+        <ele>262.14957</ele>
+      </trkpt>
+      <trkpt lat="47.534851" lon="18.990702">
+        <ele>257.60415</ele>
+      </trkpt>
+      <trkpt lat="47.534876" lon="18.990563">
+        <ele>254.21861</ele>
+      </trkpt>
+      <trkpt lat="47.534865" lon="18.990407">
+        <ele>251.36284</ele>
+      </trkpt>
+      <trkpt lat="47.534827" lon="18.990346">
+        <ele>251.24348</ele>
+      </trkpt>
+      <trkpt lat="47.534709" lon="18.990289">
+        <ele>253.95718</ele>
+      </trkpt>
+      <trkpt lat="47.534624" lon="18.990203">
+        <ele>255.18912</ele>
+      </trkpt>
+      <trkpt lat="47.53438" lon="18.989723">
+        <ele>254.37835</ele>
+      </trkpt>
+      <trkpt lat="47.534233" lon="18.989372">
+        <ele>251.79408</ele>
+      </trkpt>
+      <trkpt lat="47.534128" lon="18.989262">
+        <ele>252.02068</ele>
+      </trkpt>
+      <trkpt lat="47.534043" lon="18.989101">
+        <ele>250.49004</ele>
+      </trkpt>
+      <trkpt lat="47.53396" lon="18.98875">
+        <ele>243.63702</ele>
+      </trkpt>
+      <trkpt lat="47.533829" lon="18.988484">
+        <ele>240.6976</ele>
+      </trkpt>
+      <trkpt lat="47.53321" lon="18.987773">
+        <ele>241.62463</ele>
+      </trkpt>
+      <trkpt lat="47.533076" lon="18.987591">
+        <ele>241.66935</ele>
+      </trkpt>
+      <trkpt lat="47.53292" lon="18.98735">
+        <ele>243.18578</ele>
+      </trkpt>
+      <trkpt lat="47.532518" lon="18.986636">
+        <ele>244.21356</ele>
+      </trkpt>
+      <trkpt lat="47.532362" lon="18.986481">
+        <ele>241.06863</ele>
+      </trkpt>
+      <trkpt lat="47.532212" lon="18.986379">
+        <ele>237.44093</ele>
+      </trkpt>
+      <trkpt lat="47.532089" lon="18.986218">
+        <ele>230.75918</ele>
+      </trkpt>
+      <trkpt lat="47.531924" lon="18.986143">
+        <ele>225.94245</ele>
+      </trkpt>
+      <trkpt lat="47.531841" lon="18.986129">
+        <ele>224.24385</ele>
+      </trkpt>
+      <trkpt lat="47.531781" lon="18.986172">
+        <ele>224.97187</ele>
+      </trkpt>
+      <trkpt lat="47.53166" lon="18.986336">
+        <ele>229.08601</ele>
+      </trkpt>
+      <trkpt lat="47.531566" lon="18.986097">
+        <ele>218.67906</ele>
+      </trkpt>
+      <trkpt lat="47.531654" lon="18.986333">
+        <ele>228.88329</ele>
+      </trkpt>
+      <trkpt lat="47.531526" lon="18.986617">
+        <ele>235.16846</ele>
+      </trkpt>
+      <trkpt lat="47.531426" lon="18.98677">
+        <ele>236.19023</ele>
+      </trkpt>
+      <trkpt lat="47.531267" lon="18.986954">
+        <ele>235.38211</ele>
+      </trkpt>
+      <trkpt lat="47.531174" lon="18.987033">
+        <ele>234.28652</ele>
+      </trkpt>
+      <trkpt lat="47.531126" lon="18.987126">
+        <ele>234.49803</ele>
+      </trkpt>
+      <trkpt lat="47.5311" lon="18.987266">
+        <ele>235.78486</ele>
+      </trkpt>
+      <trkpt lat="47.531134" lon="18.987444">
+        <ele>238.53853</ele>
+      </trkpt>
+      <trkpt lat="47.531251" lon="18.987437">
+        <ele>240.78796</ele>
+      </trkpt>
+      <trkpt lat="47.531938" lon="18.988128">
+        <ele>253.52248</ele>
+      </trkpt>
+      <trkpt lat="47.532328" lon="18.988571">
+        <ele>257.66095</ele>
+      </trkpt>
+      <trkpt lat="47.532445" lon="18.988806">
+        <ele>259.70733</ele>
+      </trkpt>
+      <trkpt lat="47.532496" lon="18.989036">
+        <ele>261.38971</ele>
+      </trkpt>
+      <trkpt lat="47.532506" lon="18.98973">
+        <ele>262.80203</ele>
+      </trkpt>
+      <trkpt lat="47.532528" lon="18.990094">
+        <ele>263.51417</ele>
+      </trkpt>
+      <trkpt lat="47.532736" lon="18.990672">
+        <ele>268.26963</ele>
+      </trkpt>
+      <trkpt lat="47.53282" lon="18.991085">
+        <ele>270.31852</ele>
+      </trkpt>
+      <trkpt lat="47.532975" lon="18.991521">
+        <ele>272.42291</ele>
+      </trkpt>
+      <trkpt lat="47.533331" lon="18.992224">
+        <ele>274.85406</ele>
+      </trkpt>
+      <trkpt lat="47.533943" lon="18.993189">
+        <ele>277.82438</ele>
+      </trkpt>
+      <trkpt lat="47.533683" lon="18.993387">
+        <ele>276.96181</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
