@@ -97,8 +97,27 @@ export type HikeInsights = {
   averageGradePercent: number | null;
 };
 
-export type PublicHikeFeed = {
+export type PublicHikeRecordFeed = {
   version: 1;
   updatedAt: string;
   hikes: HikeRecord[];
 };
+
+export type PublicHikeReference =
+  | string
+  | {
+      gpxPath: string;
+      id?: string;
+      title?: string;
+      createdAt?: string;
+      sourceType?: HikeSourceType;
+      sourceValue?: string;
+    };
+
+export type PublicHikeReferenceFeed = {
+  version: 2;
+  updatedAt: string;
+  hikes: PublicHikeReference[];
+};
+
+export type PublicHikeFeed = PublicHikeRecordFeed | PublicHikeReferenceFeed;

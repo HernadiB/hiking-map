@@ -96,25 +96,59 @@ When imports are disabled:
 The published website no longer reads hikes from browser local storage.
 
 - public web builds fetch the shared JSON feed from `mobile/public/data/public-hikes.json`
+- the preferred format is a GPX manifest, so you only list GPX file paths stored in the repository
 - owner/admin builds can still import hikes locally
 - on web, the owner/admin build can download a fresh `public-hikes.json` feed from the top menu
 - an example feed is available in `mobile/public/data/example-public-hikes.json`
 
-Feed shape:
+Preferred feed shape:
 
-- root object: `version`, `updatedAt`, `hikes`
-- each hike: `id`, `createdAt`, `title`, `sourceType`, `sourceValue`, `distanceMeters`, `elevationGainMeters`, `durationSeconds`, `startedAt`, `bounds`, `points`
-- `bounds`: `minLatitude`, `maxLatitude`, `minLongitude`, `maxLongitude`
-- each point: `latitude`, `longitude`, `elevationMeters`, `recordedAt`
+```json
+{
+  "version": 2,
+  "updatedAt": "2026-05-06T13:05:00.000Z",
+  "hikes": [
+    "gpx/my-first-hike.gpx",
+    "gpx/my-second-hike.gpx"
+  ]
+}
+```
+
+How it works:
+
+- the paths are resolved relative to `mobile/public/data/public-hikes.json`
+- if the feed file lives in `mobile/public/data/`, then `gpx/my-first-hike.gpx` points to `mobile/public/data/gpx/my-first-hike.gpx`
+- the app loads each GPX file at runtime and computes title, bounds, distance, elevation gain, duration, and route points automatically
+
+Optional verbose entry:
+
+```json
+{
+  "version": 2,
+  "updatedAt": "2026-05-06T13:05:00.000Z",
+  "hikes": [
+    {
+      "gpxPath": "gpx/my-first-hike.gpx",
+      "id": "my_first_hike",
+      "title": "My First Hike",
+      "sourceType": "file",
+      "sourceValue": "gpx/my-first-hike.gpx"
+    }
+  ]
+}
+```
+
+Supported fields in the verbose entry:
+
+- required: `gpxPath`
+- optional: `id`, `title`, `createdAt`, `sourceType`, `sourceValue`
 
 Recommended update workflow:
 
-1. run the owner/admin web build locally with imports enabled
-2. import or update your hikes
-3. use `Download public feed JSON`
-4. replace `mobile/public/data/public-hikes.json` in the repository with the downloaded file
-5. commit and push
-6. GitHub Pages republishes the site automatically
+1. place your `.gpx` files under `mobile/public/data/gpx/`
+2. update `mobile/public/data/public-hikes.json` with the GPX paths
+3. commit and push
+4. GitHub Pages republishes the site automatically
 
 ### GitHub Pages publishing
 
