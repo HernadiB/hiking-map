@@ -225,10 +225,10 @@ export function HikeMap({
         : null;
 
       const polyline = leaflet.polyline(coordinates, {
-        color: isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)',
+        color: isSelected ? palette.highlight : palette.routeBase,
         lineCap: 'round',
         lineJoin: 'round',
-        opacity: isSelected ? 1 : 0.86,
+        opacity: isSelected ? 1 : 0.94,
         weight: isSelected ? 6.5 : 3.5,
       });
 

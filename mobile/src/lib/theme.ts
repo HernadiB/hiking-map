@@ -10,6 +10,8 @@ export const palette = {
   accentStrong: '#2F6B46',
   sand: '#5D7E4D',
   sandText: '#F4FAF1',
+  routeBase: '#4F8A5B',
+  routeBaseSoft: '#B7D7BD',
   highlight: '#C9792E',
   highlightSoft: '#F1D7BB',
   highlightText: '#5E3813',

@@ -164,8 +164,8 @@ export function RouteCollectionPreviewGraphic({
             key={`${hike.id}-line`}
             d={projection.pathData}
             fill="none"
-            opacity={isSelected ? 1 : 0.82}
-            stroke={isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)'}
+            opacity={isSelected ? 1 : 0.92}
+            stroke={isSelected ? palette.highlight : palette.routeBase}
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={isSelected ? 8 : 4}

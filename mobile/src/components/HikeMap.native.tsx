@@ -192,7 +192,7 @@ export function HikeMap({
                   syncFocusedProfilePoint(event.nativeEvent.coordinate);
                   onSelectHike?.(hike.id);
                 }}
-                strokeColor={isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)'}
+                strokeColor={isSelected ? palette.highlight : palette.routeBase}
                 strokeWidth={isSelected ? 6 : 3}
                 tappable={Boolean(onSelectHike || hasProfileSync)}
                 zIndex={isSelected ? 3 : 1}
