@@ -44,6 +44,7 @@ The app is meant for App Store, Play Store, and web delivery, with no sign-in re
 - [mobile](./mobile): Expo app for iOS, Android, and web
 - [docs/stack-and-architecture.md](./docs/stack-and-architecture.md): architecture and product notes
 - [mobile/public/data/public-hikes.json](./mobile/public/data/public-hikes.json): shared read-only hike feed for the published website
+- [mobile/public/data/example-public-hikes.json](./mobile/public/data/example-public-hikes.json): example JSON feed you can copy and adapt
 
 ## Testing the current app
 
@@ -97,6 +98,14 @@ The published website no longer reads hikes from browser local storage.
 - public web builds fetch the shared JSON feed from `mobile/public/data/public-hikes.json`
 - owner/admin builds can still import hikes locally
 - on web, the owner/admin build can download a fresh `public-hikes.json` feed from the top menu
+- an example feed is available in `mobile/public/data/example-public-hikes.json`
+
+Feed shape:
+
+- root object: `version`, `updatedAt`, `hikes`
+- each hike: `id`, `createdAt`, `title`, `sourceType`, `sourceValue`, `distanceMeters`, `elevationGainMeters`, `durationSeconds`, `startedAt`, `bounds`, `points`
+- `bounds`: `minLatitude`, `maxLatitude`, `minLongitude`, `maxLongitude`
+- each point: `latitude`, `longitude`, `elevationMeters`, `recordedAt`
 
 Recommended update workflow:
 
