@@ -104,12 +104,16 @@ export function FeaturedHikeCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#F6F9F1',
-    borderColor: '#CFDBC7',
+    backgroundColor: '#FFF8EF',
+    borderColor: palette.highlight,
     borderRadius: 28,
     borderWidth: 1,
     gap: 14,
     padding: 18,
+    shadowColor: '#A85C1F',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
   },
   header: {
     alignItems: 'flex-start',
@@ -122,7 +126,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   eyebrow: {
-    color: palette.accentStrong,
+    color: palette.highlight,
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 1.1,
@@ -141,14 +145,14 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     alignItems: 'center',
-    backgroundColor: palette.accentStrong,
+    backgroundColor: palette.highlight,
     borderRadius: 999,
     justifyContent: 'center',
     minHeight: 40,
     paddingHorizontal: 14,
   },
   actionButtonText: {
-    color: '#F4FAF1',
+    color: '#FFF8F0',
     fontSize: 13,
     fontWeight: '800',
   },
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   chipWarm: {
-    backgroundColor: '#DDE9D8',
+    backgroundColor: palette.highlightSoft,
   },
   chipText: {
     color: palette.accentStrong,
@@ -176,10 +180,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   chipWarmText: {
-    color: palette.accent,
+    color: palette.highlightText,
   },
   previewFrame: {
-    backgroundColor: '#E6EEDF',
+    backgroundColor: '#F7ECDD',
+    borderColor: '#E5C49E',
+    borderWidth: 1,
     borderRadius: 24,
     overflow: 'hidden',
     padding: 10,

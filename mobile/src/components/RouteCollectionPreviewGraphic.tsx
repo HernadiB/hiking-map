@@ -129,11 +129,11 @@ export function RouteCollectionPreviewGraphic({
             key={`${hike.id}-shadow`}
             d={projection.pathData}
             fill="none"
-            opacity={isSelected ? 0.18 : 0.08}
+            opacity={isSelected ? 0.24 : 0.06}
             stroke="#121A15"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={isSelected ? 18 : 12}
+            strokeWidth={isSelected ? 20 : 10}
           />
         );
       })}
@@ -147,18 +147,30 @@ export function RouteCollectionPreviewGraphic({
 
         const isSelected = hike.id === selectedHike.id;
 
-        return (
+        return [
+          isSelected ? (
+            <Path
+              key={`${hike.id}-glow`}
+              d={projection.pathData}
+              fill="none"
+              opacity={0.98}
+              stroke={palette.highlightSoft}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={12}
+            />
+          ) : null,
           <Path
             key={`${hike.id}-line`}
             d={projection.pathData}
             fill="none"
-            opacity={isSelected ? 1 : 0.78}
-            stroke={isSelected ? palette.sand : palette.accentStrong}
+            opacity={isSelected ? 1 : 0.82}
+            stroke={isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)'}
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={isSelected ? 8 : 5}
-          />
-        );
+            strokeWidth={isSelected ? 8 : 4}
+          />,
+        ];
       })}
 
       {selectedHike.points.length > 1 ? (
@@ -180,7 +192,7 @@ export function RouteCollectionPreviewGraphic({
               <>
                 <Circle cx={projection.start.x} cy={projection.start.y} fill="#3A7A63" r="15" />
                 <Circle cx={projection.start.x} cy={projection.start.y} fill="#F6FBF8" r="7" />
-                <Circle cx={projection.finish.x} cy={projection.finish.y} fill={palette.sand} r="15" />
+                <Circle cx={projection.finish.x} cy={projection.finish.y} fill={palette.highlight} r="15" />
                 <Circle cx={projection.finish.x} cy={projection.finish.y} fill="#FFF8EE" r="7" />
               </>
             );

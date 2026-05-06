@@ -87,7 +87,7 @@ export function RoutePreviewGraphic({
       <Path
         d={projection.pathData}
         fill="none"
-        stroke={palette.accentStrong}
+        stroke={palette.highlight}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="7"
@@ -95,7 +95,7 @@ export function RoutePreviewGraphic({
 
       <Circle cx={projection.start.x} cy={projection.start.y} fill="#3A7A63" r="15" />
       <Circle cx={projection.start.x} cy={projection.start.y} fill="#F6FBF8" r="7" />
-      <Circle cx={projection.finish.x} cy={projection.finish.y} fill={palette.sand} r="15" />
+      <Circle cx={projection.finish.x} cy={projection.finish.y} fill={palette.highlight} r="15" />
       <Circle cx={projection.finish.x} cy={projection.finish.y} fill="#FFF8EE" r="7" />
     </Svg>
   );

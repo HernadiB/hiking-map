@@ -49,14 +49,32 @@ function readSingleParam(value: string | string[] | undefined): string {
 function Metric({
   label,
   value,
+  compact = false,
+  emphasize = false,
 }: {
   label: string;
   value: string;
+  compact?: boolean;
+  emphasize?: boolean;
 }) {
   return (
-    <View style={styles.metricCard}>
-      <Text style={styles.metricLabel}>{label}</Text>
-      <Text style={styles.metricValue}>{value}</Text>
+    <View
+      style={[
+        styles.metricCard,
+        compact && styles.metricCardCompact,
+        emphasize && styles.metricCardEmphasis,
+      ]}
+    >
+      <Text style={[styles.metricLabel, compact && styles.metricLabelCompact]}>{label}</Text>
+      <Text
+        style={[
+          styles.metricValue,
+          compact && styles.metricValueCompact,
+          emphasize && styles.metricValueEmphasis,
+        ]}
+      >
+        {value}
+      </Text>
     </View>
   );
 }
@@ -108,6 +126,8 @@ export default function HomeScreen() {
   );
   const selectedHikeInsights = selectedHike ? hikeInsightsById[selectedHike.id] ?? null : null;
   const isCompactSnapshotOverlay = width < 960;
+  const isMobileSnapshotOverlay = width < 680;
+  const mobileSnapshotWidth = Math.min(Math.max(width * 0.56, 176), 228);
 
   const overviewMetrics = useMemo(() => {
     const totalDistanceMeters = hikeRecords.reduce((total, hike) => total + hike.distanceMeters, 0);
@@ -501,6 +521,8 @@ export default function HomeScreen() {
                   isCompactSnapshotOverlay
                     ? styles.snapshotOverlayCompact
                     : styles.snapshotOverlayWide,
+                  isMobileSnapshotOverlay && styles.snapshotOverlayMobile,
+                  isMobileSnapshotOverlay ? { width: mobileSnapshotWidth } : null,
                 ]}
               >
                 <View
@@ -509,26 +531,57 @@ export default function HomeScreen() {
                     isCompactSnapshotOverlay
                       ? styles.heroSnapshotCompact
                       : styles.heroSnapshotWide,
+                    isMobileSnapshotOverlay && styles.heroSnapshotMobile,
                   ]}
                 >
-                  <View style={styles.heroSnapshotHeader}>
-                    <Text style={styles.heroSnapshotTitle}>{t('homeCollectionSnapshot')}</Text>
-                    <Text style={styles.heroSnapshotMeta}>
+                  <View
+                    style={[
+                      styles.heroSnapshotHeader,
+                      isMobileSnapshotOverlay && styles.heroSnapshotHeaderCompact,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.heroSnapshotTitle,
+                        isMobileSnapshotOverlay && styles.heroSnapshotTitleCompact,
+                      ]}
+                    >
+                      {t('homeCollectionSnapshot')}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.heroSnapshotMeta,
+                        isMobileSnapshotOverlay && styles.heroSnapshotMetaCompact,
+                      ]}
+                    >
                       {visibleHikeCount} | {formatDistance(overviewMetrics.totalDistanceMeters)}
                     </Text>
                   </View>
 
-                  <View style={styles.heroSnapshotGrid}>
-                    <Metric label={t('homeTracksShown')} value={String(visibleHikeCount)} />
+                  <View
+                    style={[
+                      styles.heroSnapshotGrid,
+                      isMobileSnapshotOverlay && styles.heroSnapshotGridCompact,
+                    ]}
+                  >
                     <Metric
+                      compact={isMobileSnapshotOverlay}
+                      emphasize
+                      label={t('homeTracksShown')}
+                      value={String(visibleHikeCount)}
+                    />
+                    <Metric
+                      compact={isMobileSnapshotOverlay}
                       label={t('homeTotalDistance')}
                       value={formatDistance(overviewMetrics.totalDistanceMeters)}
                     />
                     <Metric
+                      compact={isMobileSnapshotOverlay}
                       label={t('homeTotalAscent')}
                       value={formatElevation(overviewMetrics.totalAscentMeters)}
                     />
                     <Metric
+                      compact={isMobileSnapshotOverlay}
                       label={t('homeHighestPoint')}
                       value={
                         overviewMetrics.highestPointMeters === null
@@ -757,26 +810,47 @@ const styles = StyleSheet.create({
   heroSnapshotCompact: {
     maxWidth: '100%',
   },
+  heroSnapshotMobile: {
+    borderRadius: 18,
+    gap: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
   heroSnapshotHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',
   },
+  heroSnapshotHeaderCompact: {
+    alignItems: 'flex-start',
+    gap: 4,
+  },
   heroSnapshotTitle: {
     color: palette.text,
     fontSize: 17,
     fontWeight: '700',
+  },
+  heroSnapshotTitleCompact: {
+    fontSize: 14,
+    lineHeight: 18,
   },
   heroSnapshotMeta: {
     color: palette.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },
+  heroSnapshotMetaCompact: {
+    fontSize: 11,
+    lineHeight: 15,
+  },
   heroSnapshotGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+  },
+  heroSnapshotGridCompact: {
+    gap: 8,
   },
   panel: {
     backgroundColor: palette.panel,
@@ -942,17 +1016,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
+  metricCardCompact: {
+    borderRadius: 14,
+    minWidth: '46%',
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+  },
+  metricCardEmphasis: {
+    backgroundColor: palette.highlightSoft,
+  },
   metricLabel: {
     color: palette.textMuted,
     fontSize: 12,
     fontWeight: '600',
     textTransform: 'uppercase',
   },
+  metricLabelCompact: {
+    fontSize: 9,
+    lineHeight: 12,
+  },
   metricValue: {
     color: palette.text,
     fontSize: 17,
     fontWeight: '800',
     marginTop: 4,
+  },
+  metricValueCompact: {
+    fontSize: 14,
+    lineHeight: 18,
+    marginTop: 3,
+  },
+  metricValueEmphasis: {
+    color: palette.highlightText,
   },
   selectedRouteFallback: {
     color: palette.textMuted,
@@ -969,8 +1064,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   infoChipAccent: {
-    backgroundColor: palette.sand,
-    borderColor: palette.sand,
+    backgroundColor: palette.highlight,
+    borderColor: palette.highlight,
   },
   infoChipText: {
     color: palette.text,
@@ -1001,6 +1096,11 @@ const styles = StyleSheet.create({
     left: 14,
     right: 14,
     top: 74,
+  },
+  snapshotOverlayMobile: {
+    left: 14,
+    right: undefined,
+    top: 86,
   },
   mapViewBadgeOverlay: {
     position: 'absolute',
@@ -1042,7 +1142,7 @@ const styles = StyleSheet.create({
   },
   featuredFallback: {
     backgroundColor: palette.inputBackground,
-    borderColor: palette.border,
+    borderColor: palette.highlight,
     borderRadius: 24,
     borderWidth: 1,
     paddingHorizontal: 16,
@@ -1083,8 +1183,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   hikeCardSelected: {
-    borderColor: palette.accentStrong,
-    backgroundColor: palette.panelRaised,
+    backgroundColor: '#FFF7EE',
+    borderColor: palette.highlight,
   },
   hikeCardPressed: {
     opacity: 0.9,
@@ -1116,13 +1216,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   selectedBadge: {
-    backgroundColor: palette.sand,
+    backgroundColor: palette.highlight,
     borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
   selectedBadgeText: {
-    color: palette.sandText,
+    color: '#FFF9F2',
     fontSize: 12,
     fontWeight: '700',
   },

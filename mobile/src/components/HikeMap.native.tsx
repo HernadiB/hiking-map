@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 
@@ -170,22 +170,34 @@ export function HikeMap({
       >
         {hikes.map((hike) => {
           const isSelected = hike.id === selectedHike?.id;
+          const coordinates = hike.points.map((point) => ({
+            latitude: point.latitude,
+            longitude: point.longitude,
+          }));
 
           return (
-            <Polyline
-              key={hike.id}
-              coordinates={hike.points.map((point) => ({
-                latitude: point.latitude,
-                longitude: point.longitude,
-              }))}
-              onPress={(event) => {
-                syncFocusedProfilePoint(event.nativeEvent.coordinate);
-                onSelectHike?.(hike.id);
-              }}
-              strokeColor={isSelected ? palette.sand : palette.accentStrong}
-              strokeWidth={isSelected ? 5 : 3}
-              tappable={Boolean(onSelectHike || hasProfileSync)}
-            />
+            <Fragment key={hike.id}>
+              {isSelected ? (
+                <Polyline
+                  coordinates={coordinates}
+                  strokeColor={palette.highlightSoft}
+                  strokeWidth={10}
+                  tappable={false}
+                  zIndex={2}
+                />
+              ) : null}
+              <Polyline
+                coordinates={coordinates}
+                onPress={(event) => {
+                  syncFocusedProfilePoint(event.nativeEvent.coordinate);
+                  onSelectHike?.(hike.id);
+                }}
+                strokeColor={isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)'}
+                strokeWidth={isSelected ? 6 : 3}
+                tappable={Boolean(onSelectHike || hasProfileSync)}
+                zIndex={isSelected ? 3 : 1}
+              />
+            </Fragment>
           );
         })}
 
@@ -206,7 +218,7 @@ export function HikeMap({
               latitude: endPoint.latitude,
               longitude: endPoint.longitude,
             }}
-            pinColor={palette.sand}
+            pinColor={palette.highlight}
             title={t('commonFinish')}
           />
         ) : null}

@@ -209,14 +209,28 @@ export function HikeMap({
       const coordinates = hike.points.map(
         (point) => [point.latitude, point.longitude] as [number, number]
       );
+      const selectionHalo = isSelected
+        ? leaflet.polyline(coordinates, {
+            color: palette.highlightSoft,
+            interactive: false,
+            lineCap: 'round',
+            lineJoin: 'round',
+            opacity: 0.98,
+            weight: 11,
+          })
+        : null;
 
       const polyline = leaflet.polyline(coordinates, {
-        color: isSelected ? palette.sand : palette.accentStrong,
+        color: isSelected ? palette.highlight : 'rgba(47, 107, 70, 0.42)',
         lineCap: 'round',
         lineJoin: 'round',
-        opacity: isSelected ? 0.96 : 0.6,
-        weight: isSelected ? 6 : 4,
+        opacity: isSelected ? 1 : 0.86,
+        weight: isSelected ? 6.5 : 3.5,
       });
+
+      if (selectionHalo) {
+        selectionHalo.addTo(map);
+      }
 
       if (onSelectHike) {
         polyline.on('click', () => onSelectHike(hike.id));
@@ -233,14 +247,15 @@ export function HikeMap({
       polyline.on('touchstart', () => schedulePreview(hike.id));
       polyline.on('touchend touchcancel', clearHoverTimer);
       polyline.addTo(map);
+      polyline.bringToFront();
 
-      return polyline;
+      return selectionHalo ? [selectionHalo, polyline] : [polyline];
     });
 
-    routeLayersRef.current = allPolylines;
+    routeLayersRef.current = allPolylines.flat();
 
-    if (allPolylines.length > 0 && shouldFitBounds) {
-      const routeGroup = leaflet.featureGroup(allPolylines);
+    if (routeLayersRef.current.length > 0 && shouldFitBounds) {
+      const routeGroup = leaflet.featureGroup(routeLayersRef.current);
       map.fitBounds(routeGroup.getBounds(), {
         padding: [28, 28],
       });
@@ -272,7 +287,7 @@ export function HikeMap({
       const finishMarker = leaflet
         .circleMarker([finishPoint.latitude, finishPoint.longitude], {
           color: '#FFFFFF',
-          fillColor: palette.sand,
+          fillColor: palette.highlight,
           fillOpacity: 1,
           radius: 8,
           weight: 3,
