@@ -204,7 +204,11 @@ export function HikeMap({
       setPreviewedHikeId((current) => (current === hikeId ? null : current));
     };
 
-    const allPolylines = hikes.map((hike) => {
+    const orderedHikes = [
+      ...hikes.filter((hike) => hike.id !== selectedHike.id),
+      ...hikes.filter((hike) => hike.id === selectedHike.id),
+    ];
+    const allPolylines = orderedHikes.map((hike) => {
       const isSelected = hike.id === selectedHike.id;
       const coordinates = hike.points.map(
         (point) => [point.latitude, point.longitude] as [number, number]
@@ -247,7 +251,6 @@ export function HikeMap({
       polyline.on('touchstart', () => schedulePreview(hike.id));
       polyline.on('touchend touchcancel', clearHoverTimer);
       polyline.addTo(map);
-      polyline.bringToFront();
 
       return selectionHalo ? [selectionHalo, polyline] : [polyline];
     });
