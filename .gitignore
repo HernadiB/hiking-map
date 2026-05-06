@@ -1,0 +1,36 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Expo app artifacts
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/expo-env.d.ts
+mobile/android/
+mobile/ios/
+mobile/.kotlin/
+
+# Native signing files
+*.jks
+*.key
+*.p8
+*.p12
+*.mobileprovision
+*.pem
+
+# TypeScript
+*.tsbuildinfo
