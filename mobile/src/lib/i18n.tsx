@@ -63,7 +63,7 @@ const translations = {
     homeExportPublicFeed: 'Download public feed JSON',
     homeExportingPublicFeed: 'Preparing public feed...',
     homeExportPublicFeedBody:
-      'Download the shared hikes feed, replace `public/data/public-hikes.json` in the repository, then push to publish the updated website.',
+      'Download the shared hikes feed, replace `mobile/public/data/public-hikes.json` in the repository, then push to publish the updated website.',
     homeExportedPublicFeed: 'Downloaded the public hikes feed JSON.',
     homeCorsHint:
       'Browser link imports depend on the remote page and GPX download allowing direct fetch requests with CORS.',
@@ -231,7 +231,7 @@ const translations = {
     homeExportPublicFeed: 'Publikus feed JSON letöltése',
     homeExportingPublicFeed: 'Publikus feed előkészítése...',
     homeExportPublicFeedBody:
-      'Töltsd le a közös túrafeedet, cseréld le vele a repóban a `public/data/public-hikes.json` fájlt, majd pushold ki a frissített weboldal publikálásához.',
+      'Töltsd le a közös túrafeedet, cseréld le vele a repóban a `mobile/public/data/public-hikes.json` fájlt, majd pushold ki a frissített weboldal publikálásához.',
     homeExportedPublicFeed: 'A publikus túrafeed JSON letöltve.',
     homeCorsHint:
       'Böngészőben a linkimport attól függ, hogy a távoli oldal és a GPX letöltés engedi-e a közvetlen CORS lekérést.',
