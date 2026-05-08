@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   monthLabelActive: {
-    color: '#F8FBF8',
+    color: palette.sandText,
   },
   caption: {
     color: palette.textMuted,

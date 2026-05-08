@@ -269,12 +269,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fallbackFrame: {
-    backgroundColor: '#EAF1E3',
+    backgroundColor: palette.panelRaised,
     justifyContent: 'center',
   },
   fallbackNotice: {
-    backgroundColor: 'rgba(246,249,241,0.94)',
-    borderColor: '#CFDBC7',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
     borderRadius: 18,
     borderWidth: 1,
     left: 14,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   counterText: {
-    color: '#F8FBF9',
+    color: palette.sandText,
     fontSize: 12,
     fontWeight: '700',
   },

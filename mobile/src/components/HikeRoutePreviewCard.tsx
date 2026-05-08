@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { formatDistance, formatDuration, formatElevation } from '../lib/format';
+import { formatDistance, formatDurationWithEstimate, formatElevation } from '../lib/format';
 import { getDifficultyLabel, getRouteTypeLabel, useI18n } from '../lib/i18n';
 import { getHikeInsights } from '../lib/hike-insights';
 import { palette } from '../lib/theme';
@@ -53,7 +53,9 @@ export function HikeRoutePreviewCard({
         <PreviewStat label={t('factDescent')} value={formatElevation(insights.elevationLossMeters)} />
         <PreviewStat
           label={t('factDuration')}
-          value={formatDuration(hike.durationSeconds, {
+          value={formatDurationWithEstimate(hike.durationSeconds, {
+            distanceMeters: hike.distanceMeters,
+            elevationGainMeters: hike.elevationGainMeters,
             language,
             unavailableLabel: t('commonNotAvailable'),
           })}
@@ -65,8 +67,8 @@ export function HikeRoutePreviewCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(246, 249, 241, 0.97)',
-    borderColor: '#CFDBC7',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
     borderRadius: 22,
     borderWidth: 1,
     gap: 12,
@@ -83,13 +85,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    backgroundColor: '#E5EFE9',
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
     borderRadius: 999,
+    borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
   chipWarm: {
-    backgroundColor: '#DDE9D8',
+    backgroundColor: palette.highlightSoft,
+    borderColor: palette.highlight,
   },
   chipText: {
     color: palette.accentStrong,
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   chipTextWarm: {
-    color: palette.accent,
+    color: palette.highlightText,
   },
   title: {
     color: palette.text,
@@ -112,10 +117,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   stat: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.panelRaised,
     borderRadius: 16,
     flexGrow: 1,
-    minWidth: '46%',
+    minWidth: 120,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
@@ -127,6 +132,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 15,
     fontWeight: '800',
     lineHeight: 20,

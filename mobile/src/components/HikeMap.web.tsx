@@ -135,6 +135,14 @@ export function HikeMap({
         })
         .addTo(map);
 
+      map.createPane('route-hitbox-pane');
+      const hitboxPane = map.getPane('route-hitbox-pane');
+
+      if (hitboxPane) {
+        hitboxPane.style.zIndex = '460';
+        hitboxPane.style.pointerEvents = 'auto';
+      }
+
       map.on('moveend zoomend', updateVisibleCountFromMap);
       map.on('movestart zoomstart', clearHoverTimer);
       mapRef.current = map;
@@ -188,20 +196,34 @@ export function HikeMap({
     const hikeKey = hikes.map((hike) => hike.id).join(':');
     const shouldFitBounds = hikeKey !== lastHikeKeyRef.current;
 
-    const schedulePreview = (hikeId: string) => {
-      if (!showRoutePreview || typeof window === 'undefined') {
+    const showPreview = (hikeId: string) => {
+      if (!showRoutePreview) {
         return;
       }
 
       clearHoverTimer();
-      hoverTimerRef.current = window.setTimeout(() => {
-        setPreviewedHikeId(hikeId);
-      }, 220);
+      setPreviewedHikeId(hikeId);
     };
 
     const clearPreviewForHike = (hikeId: string) => {
       clearHoverTimer();
       setPreviewedHikeId((current) => (current === hikeId ? null : current));
+    };
+
+    const bindRoutePreviewEvents = (layer: any, hikeId: string) => {
+      layer.on('mousemove', (event: { latlng: { lat: number; lng: number } }) => {
+        syncFocusedProfilePoint(event.latlng);
+        showPreview(hikeId);
+      });
+      layer.on('click', (event: { latlng: { lat: number; lng: number } }) => {
+        syncFocusedProfilePoint(event.latlng);
+      });
+      layer.on('mouseover', () => showPreview(hikeId));
+      layer.on('mousedown', () => showPreview(hikeId));
+      layer.on('mouseout', () => clearPreviewForHike(hikeId));
+      layer.on('mouseup', clearHoverTimer);
+      layer.on('touchstart', () => showPreview(hikeId));
+      layer.on('touchend touchcancel', clearHoverTimer);
     };
 
     const orderedHikes = [
@@ -231,6 +253,15 @@ export function HikeMap({
         opacity: isSelected ? 1 : 0.94,
         weight: isSelected ? 6.5 : 3.5,
       });
+      const hitbox = leaflet.polyline(coordinates, {
+        color: '#000000',
+        interactive: true,
+        lineCap: 'round',
+        lineJoin: 'round',
+        opacity: 0.01,
+        pane: 'route-hitbox-pane',
+        weight: 20,
+      });
 
       if (selectionHalo) {
         selectionHalo.addTo(map);
@@ -238,21 +269,15 @@ export function HikeMap({
 
       if (onSelectHike) {
         polyline.on('click', () => onSelectHike(hike.id));
+        hitbox.on('click', () => onSelectHike(hike.id));
       }
 
-      polyline.on('mousemove', (event: { latlng: { lat: number; lng: number } }) => {
-        syncFocusedProfilePoint(event.latlng);
-      });
-      polyline.on('click', (event: { latlng: { lat: number; lng: number } }) => {
-        syncFocusedProfilePoint(event.latlng);
-      });
-      polyline.on('mouseover', () => schedulePreview(hike.id));
-      polyline.on('mouseout', () => clearPreviewForHike(hike.id));
-      polyline.on('touchstart', () => schedulePreview(hike.id));
-      polyline.on('touchend touchcancel', clearHoverTimer);
+      bindRoutePreviewEvents(polyline, hike.id);
+      bindRoutePreviewEvents(hitbox, hike.id);
       polyline.addTo(map);
+      hitbox.addTo(map);
 
-      return selectionHalo ? [selectionHalo, polyline] : [polyline];
+      return selectionHalo ? [selectionHalo, polyline, hitbox] : [polyline, hitbox];
     });
 
     routeLayersRef.current = allPolylines.flat();
@@ -274,7 +299,7 @@ export function HikeMap({
     if (showMarkers && startPoint) {
       const startMarker = leaflet
         .circleMarker([startPoint.latitude, startPoint.longitude], {
-          color: '#FFFFFF',
+          color: palette.sandText,
           fillColor: palette.accentStrong,
           fillOpacity: 1,
           radius: 8,
@@ -289,7 +314,7 @@ export function HikeMap({
     if (showMarkers && finishPoint) {
       const finishMarker = leaflet
         .circleMarker([finishPoint.latitude, finishPoint.longitude], {
-          color: '#FFFFFF',
+          color: palette.sandText,
           fillColor: palette.highlight,
           fillOpacity: 1,
           radius: 8,
@@ -314,18 +339,25 @@ export function HikeMap({
       return;
     }
 
-    if (focusedMarkerRef.current) {
-      focusedMarkerRef.current.remove();
-      focusedMarkerRef.current = null;
+    if (!focusedProfilePoint) {
+      if (focusedMarkerRef.current) {
+        focusedMarkerRef.current.remove();
+        focusedMarkerRef.current = null;
+      }
+
+      return;
     }
 
-    if (!focusedProfilePoint) {
+    const nextLatLng = [focusedProfilePoint.latitude, focusedProfilePoint.longitude];
+
+    if (focusedMarkerRef.current) {
+      focusedMarkerRef.current.setLatLng(nextLatLng);
       return;
     }
 
     focusedMarkerRef.current = leaflet
-      .circleMarker([focusedProfilePoint.latitude, focusedProfilePoint.longitude], {
-        color: '#F4FAF1',
+      .circleMarker(nextLatLng, {
+        color: palette.sandText,
         fillColor: palette.accentStrong,
         fillOpacity: 1,
         radius: 8,
@@ -384,7 +416,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   counterText: {
-    color: '#F8FBF9',
+    color: palette.sandText,
     fontSize: 12,
     fontWeight: '700',
   },

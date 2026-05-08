@@ -1,11 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { RoutePreviewGraphic } from './RoutePreviewGraphic';
-import { formatDateTime, formatDistance, formatDuration, formatElevation } from '../lib/format';
+import { formatDistance, formatDurationWithEstimate, formatElevation } from '../lib/format';
 import {
   getDifficultyLabel,
   getRouteTypeLabel,
-  getSourceTypeLabel,
   useI18n,
 } from '../lib/i18n';
 import { palette } from '../lib/theme';
@@ -39,11 +38,7 @@ export function FeaturedHikeCard({
   actionLabel?: string;
   onActionPress?: (() => void) | undefined;
 }) {
-  const { language, locale, t } = useI18n();
-  const recordedAtLabel = formatDateTime(hike.startedAt, {
-    locale,
-    unavailableLabel: t('commonNotAvailable'),
-  });
+  const { language, t } = useI18n();
   const elevationRangeLabel =
     insights.elevationRangeMeters === null
       ? t('commonNotAvailable')
@@ -51,13 +46,14 @@ export function FeaturedHikeCard({
 
   return (
     <View style={styles.card}>
+      <View pointerEvents="none" style={styles.cardGlow} />
+
       <View style={styles.header}>
         <View style={styles.headerCopy}>
-          <Text style={styles.eyebrow}>{label}</Text>
+          <View style={styles.eyebrowPill}>
+            <Text style={styles.eyebrow}>{label}</Text>
+          </View>
           <Text style={styles.title}>{hike.title}</Text>
-          <Text style={styles.meta}>
-            {recordedAtLabel} | {getSourceTypeLabel(hike.sourceType, t)}
-          </Text>
         </View>
 
         {actionLabel && onActionPress ? (
@@ -83,7 +79,10 @@ export function FeaturedHikeCard({
       </View>
 
       <View style={styles.previewFrame}>
-        <RoutePreviewGraphic height={176} points={hike.points} />
+        <View style={styles.previewHeader}>
+          <Text style={styles.previewTitle}>{t('detailSignatureTitle')}</Text>
+        </View>
+        <RoutePreviewGraphic height={236} points={hike.points} />
       </View>
 
       <View style={styles.statGrid}>
@@ -92,7 +91,9 @@ export function FeaturedHikeCard({
         <FeaturedStat label={t('factElevationRange')} value={elevationRangeLabel} />
         <FeaturedStat
           label={t('factDuration')}
-          value={formatDuration(hike.durationSeconds, {
+          value={formatDurationWithEstimate(hike.durationSeconds, {
+            distanceMeters: hike.distanceMeters,
+            elevationGainMeters: hike.elevationGainMeters,
             language,
             unavailableLabel: t('commonNotAvailable'),
           })}
@@ -104,26 +105,47 @@ export function FeaturedHikeCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFF8EF',
-    borderColor: palette.highlight,
-    borderRadius: 28,
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
+    borderRadius: 32,
     borderWidth: 1,
-    gap: 14,
-    padding: 18,
+    gap: 16,
+    overflow: 'hidden',
+    padding: 20,
     shadowColor: '#A85C1F',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.14,
+    shadowRadius: 28,
+  },
+  cardGlow: {
+    backgroundColor: 'rgba(201, 121, 46, 0.12)',
+    borderRadius: 999,
+    height: 180,
+    position: 'absolute',
+    right: -58,
+    top: -70,
+    width: 180,
   },
   header: {
     alignItems: 'flex-start',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     justifyContent: 'space-between',
   },
   headerCopy: {
     flex: 1,
-    gap: 6,
+    gap: 8,
+    minWidth: 0,
+  },
+  eyebrowPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: palette.highlightSoft,
+    borderColor: palette.highlight,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
   eyebrow: {
     color: palette.highlight,
@@ -134,25 +156,26 @@ const styles = StyleSheet.create({
   },
   title: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 22,
     fontWeight: '800',
     lineHeight: 28,
-  },
-  meta: {
-    color: palette.textMuted,
-    fontSize: 13,
-    lineHeight: 20,
   },
   actionButton: {
     alignItems: 'center',
     backgroundColor: palette.highlight,
     borderRadius: 999,
     justifyContent: 'center',
-    minHeight: 40,
-    paddingHorizontal: 14,
+    minHeight: 44,
+    maxWidth: '100%',
+    paddingHorizontal: 16,
+    shadowColor: '#A85C1F',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 14,
   },
   actionButtonText: {
-    color: '#FFF8F0',
+    color: palette.sandText,
     fontSize: 13,
     fontWeight: '800',
   },
@@ -165,13 +188,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    backgroundColor: '#E5EFE9',
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   chipWarm: {
     backgroundColor: palette.highlightSoft,
+    borderColor: palette.highlight,
   },
   chipText: {
     color: palette.accentStrong,
@@ -183,12 +209,26 @@ const styles = StyleSheet.create({
     color: palette.highlightText,
   },
   previewFrame: {
-    backgroundColor: '#F7ECDD',
-    borderColor: '#E5C49E',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
     borderWidth: 1,
-    borderRadius: 24,
+    borderRadius: 26,
+    gap: 8,
     overflow: 'hidden',
-    padding: 10,
+    padding: 12,
+  },
+  previewHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  previewTitle: {
+    color: palette.text,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
   },
   statGrid: {
     flexDirection: 'row',
@@ -196,10 +236,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   statCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 18,
     flexGrow: 1,
-    minWidth: '46%',
+    minWidth: 140,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -211,6 +253,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 17,
     fontWeight: '800',
     lineHeight: 22,
