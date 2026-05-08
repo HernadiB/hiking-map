@@ -1,36 +1,140 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  Line,
+  LinearGradient,
+  Path,
+  Rect,
+  Stop,
+  Text as SvgText,
+} from 'react-native-svg';
 
 import { formatDistance, formatElevation } from '../lib/format';
-import { useI18n } from '../lib/i18n';
+import { getRouteDynamicsLabel, useI18n } from '../lib/i18n';
 import { palette } from '../lib/theme';
-import type { ElevationProfilePoint } from '../types/hikes';
+import type { ElevationProfilePoint, RouteDynamicsItem, RouteSurfaceType } from '../types/hikes';
 
 function buildLinePath(points: { x: number; y: number }[]): string {
   return points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
 }
 
-function readInteractionLocationX(
+function getRouteDynamicsColor(grade: number): string {
+  if (Math.abs(grade) <= 0.02) {
+    return palette.chartFlat;
+  }
+
+  if (grade > 0.06) {
+    return palette.chartClimb;
+  }
+
+  if (grade < -0.06) {
+    return palette.chartDescent;
+  }
+
+  return palette.chartRolling;
+}
+
+function getSurfaceColor(surfaceType: RouteSurfaceType): string {
+  if (surfaceType === 'asphalt') {
+    return '#626B73';
+  }
+
+  if (surfaceType === 'paved') {
+    return '#8C8172';
+  }
+
+  if (surfaceType === 'gravel') {
+    return '#B49A6E';
+  }
+
+  if (surfaceType === 'dirt') {
+    return '#8B5E34';
+  }
+
+  if (surfaceType === 'track') {
+    return '#A97843';
+  }
+
+  if (surfaceType === 'path') {
+    return '#6F8F4E';
+  }
+
+  if (surfaceType === 'grass') {
+    return '#7FA35C';
+  }
+
+  if (surfaceType === 'rock') {
+    return '#7B7D74';
+  }
+
+  return '#A8B1A2';
+}
+
+function getSurfaceLabel(surfaceType: RouteSurfaceType, language: 'en' | 'hu'): string {
+  const labels = {
+    en: {
+      asphalt: 'Asphalt',
+      paved: 'Paved',
+      gravel: 'Gravel',
+      dirt: 'Dirt road',
+      track: 'Track road',
+      path: 'Path',
+      grass: 'Grass',
+      rock: 'Rocky',
+      unknown: 'Unknown',
+    },
+    hu: {
+      asphalt: 'Aszfalt',
+      paved: 'Burkolt',
+      gravel: 'Murva',
+      dirt: 'Földút',
+      track: 'Dózerút',
+      path: 'Ösvény',
+      grass: 'Füves',
+      rock: 'Köves',
+      unknown: 'Ismeretlen',
+    },
+  } as const;
+
+  return labels[language][surfaceType];
+}
+
+function readInteractionLocation(
   event:
     | {
-        currentTarget?: { getBoundingClientRect?: (() => { left: number }) | undefined } | null;
+        currentTarget?:
+          | { getBoundingClientRect?: (() => { left: number; top: number }) | undefined }
+          | null;
         nativeEvent?: {
           clientX?: number;
+          clientY?: number;
           locationX?: number;
+          locationY?: number;
           offsetX?: number;
+          offsetY?: number;
         };
       }
     | undefined
-): number | null {
+): { x: number; y: number } | null {
   const nativeEvent = event?.nativeEvent;
 
-  if (typeof nativeEvent?.locationX === 'number') {
-    return nativeEvent.locationX;
+  if (
+    typeof nativeEvent?.locationX === 'number' &&
+    typeof nativeEvent.locationY === 'number'
+  ) {
+    return {
+      x: nativeEvent.locationX,
+      y: nativeEvent.locationY,
+    };
   }
 
-  if (typeof nativeEvent?.offsetX === 'number') {
-    return nativeEvent.offsetX;
+  if (typeof nativeEvent?.offsetX === 'number' && typeof nativeEvent.offsetY === 'number') {
+    return {
+      x: nativeEvent.offsetX,
+      y: nativeEvent.offsetY,
+    };
   }
 
   const currentTarget = event?.currentTarget;
@@ -38,9 +142,14 @@ function readInteractionLocationX(
   if (
     currentTarget &&
     typeof currentTarget.getBoundingClientRect === 'function' &&
-    typeof nativeEvent?.clientX === 'number'
+    typeof nativeEvent?.clientX === 'number' &&
+    typeof nativeEvent.clientY === 'number'
   ) {
-    return nativeEvent.clientX - currentTarget.getBoundingClientRect().left;
+    const bounds = currentTarget.getBoundingClientRect();
+    return {
+      x: nativeEvent.clientX - bounds.left,
+      y: nativeEvent.clientY - bounds.top,
+    };
   }
 
   return null;
@@ -51,17 +160,22 @@ export function ElevationProfileChart({
   activePoint = null,
   onActivePointChange,
   height = 280,
+  routeDynamicsItems = [],
 }: {
   points: ElevationProfilePoint[];
   activePoint?: ElevationProfilePoint | null;
   onActivePointChange?: ((point: ElevationProfilePoint | null) => void) | undefined;
   height?: number;
+  routeDynamicsItems?: RouteDynamicsItem[];
 }) {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [renderedWidth, setRenderedWidth] = useState(920);
+  const [isInteracting, setIsInteracting] = useState(false);
   const width = 920;
-  const paddingX = 32;
-  const paddingY = 28;
+  const paddingLeft = 70;
+  const paddingRight = 30;
+  const paddingTop = 34;
+  const paddingBottom = 44;
 
   const chartData = useMemo(() => {
     if (points.length < 2) {
@@ -72,29 +186,92 @@ export function ElevationProfileChart({
     const maxElevation = Math.max(...points.map((point) => point.elevationMeters));
     const totalDistance = points[points.length - 1]?.distanceMeters ?? 0;
     const elevationRange = Math.max(maxElevation - minElevation, 1);
-    const chartWidth = width - paddingX * 2;
-    const chartHeight = height - paddingY * 2;
+    const chartWidth = width - paddingLeft - paddingRight;
+    const chartHeight = height - paddingTop - paddingBottom;
 
     const projectedPoints = points.map((point) => ({
       ...point,
-      x: paddingX + (point.distanceMeters / Math.max(totalDistance, 1)) * chartWidth,
-      y: paddingY + (1 - (point.elevationMeters - minElevation) / elevationRange) * chartHeight,
+      x: paddingLeft + (point.distanceMeters / Math.max(totalDistance, 1)) * chartWidth,
+      y: paddingTop + (1 - (point.elevationMeters - minElevation) / elevationRange) * chartHeight,
     }));
 
     const linePath = buildLinePath(projectedPoints);
-    const areaPath = `${linePath} L ${paddingX + chartWidth} ${height - paddingY} L ${paddingX} ${
-      height - paddingY
+    const areaPath = `${linePath} L ${paddingLeft + chartWidth} ${height - paddingBottom} L ${paddingLeft} ${
+      height - paddingBottom
     } Z`;
+    const segmentPaths = projectedPoints.slice(1).map((point, index) => {
+      const previousPoint = projectedPoints[index];
+      const distanceDelta = point.distanceMeters - previousPoint.distanceMeters;
+      const elevationDelta = point.elevationMeters - previousPoint.elevationMeters;
+      const grade = distanceDelta > 0 ? elevationDelta / distanceDelta : 0;
+
+      return {
+        color: getRouteDynamicsColor(grade),
+        d: `M ${previousPoint.x} ${previousPoint.y} L ${point.x} ${point.y}`,
+        key: `${previousPoint.sourcePointIndex}-${point.sourcePointIndex}`,
+      };
+    });
+    const surfaceSegments = projectedPoints.slice(1).flatMap((point, index) => {
+      const previousPoint = projectedPoints[index];
+      const surfaceType = point.surfaceType ?? previousPoint.surfaceType ?? null;
+
+      if (!surfaceType) {
+        return [];
+      }
+
+      return [
+        {
+          color: getSurfaceColor(surfaceType),
+          key: `${previousPoint.sourcePointIndex}-${point.sourcePointIndex}-${surfaceType}`,
+          surfaceType,
+          x1: previousPoint.x,
+          x2: point.x,
+        },
+      ];
+    });
+    const surfaceLegendItems = Array.from(
+      new Map(
+        surfaceSegments.map((segment) => [
+          segment.surfaceType,
+          {
+            color: segment.color,
+            surfaceType: segment.surfaceType,
+          },
+        ])
+      ).values()
+    );
+    const gridLines = Array.from({ length: 4 }, (_, index) => {
+      const ratio = index / 3;
+      const elevation = maxElevation - ratio * elevationRange;
+
+      return {
+        elevation,
+        y: paddingTop + ratio * chartHeight,
+      };
+    });
+    const distanceTicks = Array.from({ length: 5 }, (_, index) => {
+      const ratio = index / 4;
+
+      return {
+        distance: totalDistance * ratio,
+        x: paddingLeft + ratio * chartWidth,
+      };
+    });
 
     return {
       minElevation,
       maxElevation,
       totalDistance,
       projectedPoints,
+      distanceTicks,
+      gridLines,
+      segmentPaths,
+      surfaceLegendItems,
+      surfaceSegments,
       linePath,
       areaPath,
     };
-  }, [points]);
+  }, [height, points]);
 
   if (!chartData) {
     return (
@@ -111,12 +288,13 @@ export function ElevationProfileChart({
           (point) => point.sourcePointIndex === activePoint.sourcePointIndex
         ) ?? null;
 
-  const updateActivePointFromLocation = (locationX: number) => {
+  const updateActivePointFromLocation = (location: { x: number; y: number }) => {
     if (!onActivePointChange || renderedWidth <= 0) {
       return;
     }
 
-    const internalX = (locationX / renderedWidth) * width;
+    const internalX = (location.x / renderedWidth) * width;
+    const internalY = (location.y / height) * height;
     const nearestPoint = chartData.projectedPoints.reduce((currentNearest, point) => {
       if (!currentNearest) {
         return point;
@@ -127,6 +305,11 @@ export function ElevationProfileChart({
         : currentNearest;
     }, chartData.projectedPoints[0]);
 
+    if (Math.abs(nearestPoint.y - internalY) > 26) {
+      onActivePointChange(null);
+      return;
+    }
+
     onActivePointChange(nearestPoint);
   };
 
@@ -136,31 +319,90 @@ export function ElevationProfileChart({
         onLayout={(event) => {
           setRenderedWidth(event.nativeEvent.layout.width || width);
         }}
-        onPointerLeave={() => onActivePointChange?.(null)}
+        onPointerCancel={() => {
+          setIsInteracting(false);
+          onActivePointChange?.(null);
+        }}
+        onPointerDown={(event) => {
+          setIsInteracting(true);
+          const pointerEvent = event as {
+            currentTarget?: {
+              getBoundingClientRect?: (() => { left: number; top: number }) | undefined;
+              setPointerCapture?: ((pointerId: number) => void) | undefined;
+            } | null;
+            nativeEvent?: {
+              pointerId?: number;
+              clientX?: number;
+              clientY?: number;
+              locationX?: number;
+              locationY?: number;
+              offsetX?: number;
+              offsetY?: number;
+            };
+          };
+
+          if (
+            typeof pointerEvent.nativeEvent?.pointerId === 'number' &&
+            typeof pointerEvent.currentTarget?.setPointerCapture === 'function'
+          ) {
+            pointerEvent.currentTarget.setPointerCapture(pointerEvent.nativeEvent.pointerId);
+          }
+
+          const location = readInteractionLocation(pointerEvent);
+
+          if (location !== null) {
+            updateActivePointFromLocation(location);
+          }
+        }}
+        onPointerLeave={() => {
+          if (!isInteracting) {
+            onActivePointChange?.(null);
+          }
+        }}
         onPointerMove={(event) => {
-          const locationX = readInteractionLocationX(
+          const location = readInteractionLocation(
             event as {
-              currentTarget?: { getBoundingClientRect?: (() => { left: number }) | undefined } | null;
+              currentTarget?:
+                | { getBoundingClientRect?: (() => { left: number; top: number }) | undefined }
+                | null;
               nativeEvent?: {
                 clientX?: number;
+                clientY?: number;
                 locationX?: number;
+                locationY?: number;
                 offsetX?: number;
+                offsetY?: number;
               };
             }
           );
 
-          if (locationX !== null) {
-            updateActivePointFromLocation(locationX);
+          if (location !== null) {
+            updateActivePointFromLocation(location);
           }
         }}
+        onPointerUp={() => {
+          setIsInteracting(false);
+        }}
         onTouchStart={(event) => {
-          updateActivePointFromLocation(event.nativeEvent.locationX);
+          setIsInteracting(true);
+          updateActivePointFromLocation({
+            x: event.nativeEvent.locationX,
+            y: event.nativeEvent.locationY,
+          });
         }}
         onTouchMove={(event) => {
-          updateActivePointFromLocation(event.nativeEvent.locationX);
+          updateActivePointFromLocation({
+            x: event.nativeEvent.locationX,
+            y: event.nativeEvent.locationY,
+          });
         }}
-        onTouchCancel={() => onActivePointChange?.(null)}
-        onTouchEnd={() => onActivePointChange?.(null)}
+        onTouchCancel={() => {
+          setIsInteracting(false);
+          onActivePointChange?.(null);
+        }}
+        onTouchEnd={() => {
+          setIsInteracting(false);
+        }}
         style={styles.chartFrame}
       >
         <Svg height={height} viewBox={`0 0 ${width} ${height}`} width="100%">
@@ -171,17 +413,82 @@ export function ElevationProfileChart({
             </LinearGradient>
           </Defs>
 
-          <Rect fill="#EEF4E7" height={height} rx="24" ry="24" width={width} />
+          <Rect fill="#FAFCF7" height={height} rx="24" ry="24" width={width} />
+
+          {chartData.gridLines.map((line) => (
+            <Line
+              key={`grid-${Math.round(line.elevation)}-${Math.round(line.y)}`}
+              stroke="rgba(72,91,74,0.22)"
+              strokeDasharray="9 11"
+              strokeWidth="2"
+              x1={paddingLeft}
+              x2={width - paddingRight}
+              y1={line.y}
+              y2={line.y}
+            />
+          ))}
+
+          {chartData.gridLines.map((line) => (
+            <SvgText
+              key={`grid-label-${Math.round(line.elevation)}-${Math.round(line.y)}`}
+              fill="rgba(43,58,46,0.58)"
+              fontSize="24"
+              fontWeight="700"
+              textAnchor="end"
+              x={paddingLeft - 16}
+              y={line.y + 8}
+            >
+              {formatElevation(line.elevation)}
+            </SvgText>
+          ))}
+
+          {chartData.distanceTicks.map((tick) => (
+            <SvgText
+              key={`distance-${Math.round(tick.distance)}`}
+              fill="rgba(43,58,46,0.48)"
+              fontSize="22"
+              fontWeight="700"
+              textAnchor="middle"
+              x={tick.x}
+              y={height - 12}
+            >
+              {formatDistance(tick.distance)}
+            </SvgText>
+          ))}
+
+          {chartData.surfaceSegments.map((segment) => (
+            <Line
+              key={segment.key}
+              stroke={segment.color}
+              strokeLinecap="round"
+              strokeWidth="10"
+              x1={segment.x1}
+              x2={segment.x2}
+              y1={height - 30}
+              y2={height - 30}
+            />
+          ))}
 
           <Path d={chartData.areaPath} fill="url(#elevation-fill)" />
           <Path
             d={chartData.linePath}
             fill="none"
-            stroke={palette.accentStrong}
+            stroke="rgba(255,255,255,0.96)"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth="6"
+            strokeWidth="12"
           />
+          {chartData.segmentPaths.map((segment) => (
+            <Path
+              key={segment.key}
+              d={segment.d}
+              fill="none"
+              stroke={segment.color}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="7"
+            />
+          ))}
 
           {activeProjectedPoint ? (
             <>
@@ -191,8 +498,8 @@ export function ElevationProfileChart({
                 strokeWidth="3"
                 x1={activeProjectedPoint.x}
                 x2={activeProjectedPoint.x}
-                y1={paddingY}
-                y2={height - paddingY}
+                y1={paddingTop}
+                y2={height - paddingBottom}
               />
               <Circle
                 cx={activeProjectedPoint.x}
@@ -242,6 +549,47 @@ export function ElevationProfileChart({
           <Text style={styles.focusHint}>{t('chartInteractiveHint')}</Text>
         )}
       </View>
+
+      <View style={styles.profileLegendPanel}>
+        <View style={styles.legendGroup}>
+          <Text style={styles.legendTitle}>
+            {language === 'hu' ? 'Útvonaldinamika' : 'Route dynamics'}
+          </Text>
+          <View style={styles.legendChips}>
+            {routeDynamicsItems.map((item) => (
+              <View key={item.key} style={styles.legendChip}>
+                <View style={[styles.legendSwatch, { backgroundColor: item.color }]} />
+                <Text style={styles.legendText}>{getRouteDynamicsLabel(item.key, t)}</Text>
+                <Text style={styles.legendMutedText}>{Math.round(item.percentage * 100)}%</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.legendGroup}>
+          <Text style={styles.legendTitle}>
+            {language === 'hu' ? 'Úttípus a GPX alapján' : 'Surface from GPX'}
+          </Text>
+          {chartData.surfaceLegendItems.length > 0 ? (
+            <View style={styles.legendChips}>
+              {chartData.surfaceLegendItems.map((item) => (
+                <View key={item.surfaceType} style={styles.legendChip}>
+                  <View style={[styles.legendSwatch, { backgroundColor: item.color }]} />
+                  <Text style={styles.legendText}>
+                    {getSurfaceLabel(item.surfaceType, language)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.legendMutedText}>
+              {language === 'hu'
+                ? 'A GPX nem tartalmaz úttípus/surface adatot.'
+                : 'The GPX does not include surface data.'}
+            </Text>
+          )}
+        </View>
+      </View>
     </View>
   );
 }
@@ -251,12 +599,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   chartFrame: {
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 24,
     overflow: 'hidden',
   },
   emptyState: {
     alignItems: 'center',
-    backgroundColor: '#EEF4E7',
+    backgroundColor: palette.panelRaised,
     borderRadius: 22,
     justifyContent: 'center',
     minHeight: 220,
@@ -298,7 +649,7 @@ const styles = StyleSheet.create({
   },
   focusMetric: {
     flexGrow: 1,
-    minWidth: '46%',
+    minWidth: 140,
   },
   focusValue: {
     color: palette.text,
@@ -311,5 +662,54 @@ const styles = StyleSheet.create({
     color: palette.textMuted,
     fontSize: 14,
     lineHeight: 20,
+  },
+  profileLegendPanel: {
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 14,
+    padding: 14,
+  },
+  legendGroup: {
+    gap: 10,
+  },
+  legendTitle: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  legendChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  legendChip: {
+    alignItems: 'center',
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 7,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  legendSwatch: {
+    borderRadius: 999,
+    height: 10,
+    width: 10,
+  },
+  legendText: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  legendMutedText: {
+    color: palette.textMuted,
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 18,
   },
 });

@@ -3,12 +3,23 @@ export type HikeSourceType = 'file' | 'url';
 export type DifficultyLevel = 'Easy' | 'Moderate' | 'Hard';
 export type AppLanguage = 'en' | 'hu';
 export type HikeRouteType = 'loop' | 'pointToPoint';
+export type RouteSurfaceType =
+  | 'asphalt'
+  | 'paved'
+  | 'gravel'
+  | 'dirt'
+  | 'track'
+  | 'path'
+  | 'grass'
+  | 'rock'
+  | 'unknown';
 
 export type HikePoint = {
   latitude: number;
   longitude: number;
   elevationMeters: number | null;
   recordedAt: string | null;
+  surfaceType?: RouteSurfaceType | null;
 };
 
 export type HikeBounds = {
@@ -65,6 +76,7 @@ export type ElevationProfilePoint = {
   latitude: number;
   longitude: number;
   sourcePointIndex: number;
+  surfaceType?: RouteSurfaceType | null;
 };
 
 export type RouteDynamicsItem = {
