@@ -5,12 +5,15 @@ import * as Sharing from 'expo-sharing';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ActivityIndicator,
+  type DimensionValue,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
+  type ViewStyle,
 } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
@@ -18,8 +21,13 @@ import { AppTopBar } from '../../src/components/AppTopBar';
 import { ElevationProfileChart } from '../../src/components/ElevationProfileChart';
 import { HikeMap } from '../../src/components/HikeMap';
 import { HikeSummaryPoster } from '../../src/components/HikeSummaryPoster';
-import { RouteDynamicsChart } from '../../src/components/RouteDynamicsChart';
-import { formatDateTime, formatDistance, formatDuration, formatElevation } from '../../src/lib/format';
+import { TrailScenePreview } from '../../src/components/TrailScenePreview';
+import {
+  formatDateTime,
+  formatDistance,
+  formatDurationWithEstimate,
+  formatElevation,
+} from '../../src/lib/format';
 import {
   getDifficultyLabel,
   getLanguageDisplayLabel,
@@ -31,6 +39,7 @@ import {
 import { getHikeInsights } from '../../src/lib/hike-insights';
 import { getHikeById, initializeHikeStore } from '../../src/lib/hikes-store';
 import { palette } from '../../src/lib/theme';
+import { useAppTheme } from '../../src/lib/theme-context';
 import type { AppLanguage, DifficultyLevel, ElevationProfilePoint, HikeInsights, HikeRecord } from '../../src/types/hikes';
 
 type ActionTone = 'primary' | 'secondary' | 'ghost';
@@ -55,21 +64,21 @@ function createPosterFileName(title: string): string {
 function getDifficultyColors(level: DifficultyLevel) {
   if (level === 'Easy') {
     return {
-      backgroundColor: '#E0EEE6',
-      textColor: '#2A5B45',
+      backgroundColor: palette.inputBackground,
+      textColor: palette.accentStrong,
     };
   }
 
   if (level === 'Moderate') {
     return {
-      backgroundColor: '#F3E0C4',
-      textColor: '#935E25',
+      backgroundColor: palette.highlightSoft,
+      textColor: palette.highlightText,
     };
   }
 
   return {
-    backgroundColor: '#E8D4CC',
-    textColor: '#93492E',
+    backgroundColor: palette.highlightSoft,
+    textColor: palette.error,
   };
 }
 
@@ -95,13 +104,15 @@ function Section({
 
 function FactCard({
   label,
+  style,
   value,
 }: {
   label: string;
+  style?: ViewStyle;
   value: string;
 }) {
   return (
-    <View style={styles.factCard}>
+    <View style={[styles.factCard, style]}>
       <Text style={styles.factLabel}>{label}</Text>
       <Text style={styles.factValue}>{value}</Text>
     </View>
@@ -185,7 +196,9 @@ export default function HikeDetailScreen() {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const hikeId = readHikeId(params.id);
   const posterRef = useRef<View | null>(null);
+  const { width } = useWindowDimensions();
   const { language, locale, setLanguage, t } = useI18n();
+  const { colors } = useAppTheme();
   const [hike, setHike] = useState<HikeRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -194,6 +207,8 @@ export default function HikeDetailScreen() {
   const [isSharingPoster, setIsSharingPoster] = useState(false);
   const [activeProfilePoint, setActiveProfilePoint] = useState<ElevationProfilePoint | null>(null);
   const [isElevationExpanded, setIsElevationExpanded] = useState(false);
+  const [isPosterExpanded, setIsPosterExpanded] = useState(false);
+  const showLegacyMapAndProfile = false;
 
   const readErrorMessage = (error: unknown, fallback: string) => {
     if (error instanceof Error && error.message) {
@@ -244,6 +259,7 @@ export default function HikeDetailScreen() {
   useEffect(() => {
     setActiveProfilePoint(null);
     setIsElevationExpanded(false);
+    setIsPosterExpanded(false);
   }, [hikeId]);
 
   const insights = useMemo(() => (hike ? getHikeInsights(hike) : null), [hike]);
@@ -252,23 +268,41 @@ export default function HikeDetailScreen() {
     () => (insights ? getDifficultyColors(insights.difficulty) : null),
     [insights]
   );
-
+  const signatureColumnCount = width >= 1120 ? 3 : width >= 720 ? 2 : 1;
+  const signatureCardBasis: DimensionValue =
+    signatureColumnCount === 1
+      ? '100%'
+      : `${(100 - (signatureColumnCount - 1) * 1.8) / signatureColumnCount}%`;
   const formatLocalizedDateTime = (value: string | null) =>
     formatDateTime(value, {
       locale,
       unavailableLabel: t('commonNotAvailable'),
     });
 
+  const formatRecordedImportedLabel = (currentHike: HikeRecord) => {
+    const importedLabel = formatLocalizedDateTime(currentHike.createdAt);
+
+    if (!currentHike.startedAt) {
+      return t('detailImportedOnly', {
+        imported: importedLabel,
+      });
+    }
+
+    return t('detailRecordedImported', {
+      recorded: formatLocalizedDateTime(currentHike.startedAt),
+      imported: importedLabel,
+    });
+  };
+
   const buildOverview = (currentHike: HikeRecord, currentInsights: HikeInsights) => {
-    const durationPart =
-      currentHike.durationSeconds === null
-        ? ''
-        : t('detailOverviewDurationPart', {
-            duration: formatDuration(currentHike.durationSeconds, {
-              language,
-              unavailableLabel: t('commonNotAvailable'),
-            }),
-          });
+    const durationPart = t('detailOverviewDurationPart', {
+      duration: formatDurationWithEstimate(currentHike.durationSeconds, {
+        distanceMeters: currentHike.distanceMeters,
+        elevationGainMeters: currentHike.elevationGainMeters,
+        language,
+        unavailableLabel: t('commonNotAvailable'),
+      }),
+    });
 
     return t('detailOverview', {
       difficulty: getDifficultyLabel(currentInsights.difficulty, t),
@@ -354,7 +388,7 @@ export default function HikeDetailScreen() {
 
     const { toPng } = await import('html-to-image');
     const dataUrl = await toPng(target, {
-      backgroundColor: '#F2F7EC',
+      backgroundColor: colors.panelRaised,
       cacheBust: true,
       pixelRatio: 2,
     });
@@ -458,7 +492,10 @@ export default function HikeDetailScreen() {
         }}
       />
 
-      <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={[styles.screen, { backgroundColor: colors.background }]}
+        contentContainerStyle={[styles.content, width < 680 && styles.contentCompact]}
+      >
         {isLoading ? (
           <View style={styles.loadingState}>
             <ActivityIndicator color={palette.accentStrong} />
@@ -534,12 +571,7 @@ export default function HikeDetailScreen() {
                 <View style={styles.heroTextGroup}>
                   <Text style={styles.title}>{hike.title}</Text>
                   <Text style={styles.subtitle}>{buildOverview(hike, insights)}</Text>
-                  <Text style={styles.heroMetaInline}>
-                    {t('detailRecordedImported', {
-                      recorded: formatLocalizedDateTime(hike.startedAt),
-                      imported: formatLocalizedDateTime(hike.createdAt),
-                    })}
-                  </Text>
+                  <Text style={styles.heroMetaInline}>{formatRecordedImportedLabel(hike)}</Text>
                 </View>
               </View>
 
@@ -558,7 +590,9 @@ export default function HikeDetailScreen() {
               <View style={styles.heroSignatureRow}>
                 <InlineFactPill
                   label={t('factDuration')}
-                  value={formatDuration(hike.durationSeconds, {
+                  value={formatDurationWithEstimate(hike.durationSeconds, {
+                    distanceMeters: hike.distanceMeters,
+                    elevationGainMeters: hike.elevationGainMeters,
                     language,
                     unavailableLabel: t('commonNotAvailable'),
                   })}
@@ -577,70 +611,81 @@ export default function HikeDetailScreen() {
                 />
               </View>
 
+              {showLegacyMapAndProfile ? (
               <View style={styles.analysisPanel}>
-                <View style={styles.mapScene}>
+                <View style={styles.routeExplorer}>
                   <View style={styles.mapFrame}>
                     <HikeMap
                       focusedProfilePoint={activeProfilePoint}
-                      height={480}
+                      height={width < 680 ? 360 : 500}
                       hikes={[hike]}
                       onFocusedProfilePointChange={handleActiveProfilePointChange}
                       profilePoints={insights.elevationProfile}
                       selectedHikeId={hike.id}
                       showMarkers
                     />
+                  </View>
 
-                    <View pointerEvents="box-none" style={styles.mapTopControls}>
-                      <Pressable
-                        accessibilityRole="button"
-                        onPress={() => setIsElevationExpanded((current) => !current)}
-                        style={({ pressed }) => [
-                          styles.profileMapToggle,
-                          isElevationExpanded && styles.profileMapToggleActive,
-                          pressed && styles.actionButtonPressed,
-                        ]}
-                      >
-                        <View style={styles.profileMapToggleCopy}>
-                          <Text style={styles.profileMapToggleTitle}>
-                            {t('detailElevationTitle')}
-                          </Text>
-                          <Text style={styles.profileMapToggleHint}>
-                            {isElevationExpanded
-                              ? t('detailProfileDrawerClose')
-                              : t('detailProfileDrawerOpen')}
-                          </Text>
-                        </View>
-                        <Text style={styles.profileMapToggleIcon}>
-                          {isElevationExpanded ? '−' : '+'}
-                        </Text>
-                      </Pressable>
-                    </View>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => setIsElevationExpanded((current) => !current)}
+                    style={({ pressed }) => [
+                      styles.routeExplorerHandle,
+                      pressed && styles.actionButtonPressed,
+                    ]}
+                  >
+                    <Text style={styles.routeExplorerHandleIcon}>
+                      {isElevationExpanded ? '-' : '+'}
+                    </Text>
+                  </Pressable>
+
+                  <View style={styles.profileInstructionCard}>
+                    <Text style={styles.profileInstructionText}>{t('detailProfileDrawerHint')}</Text>
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() => setIsElevationExpanded((current) => !current)}
+                      style={({ pressed }) => [
+                        styles.profileMapToggle,
+                        pressed && styles.actionButtonPressed,
+                      ]}
+                    >
+                      <Text style={styles.profileMapToggleTitle}>
+                        {isElevationExpanded
+                          ? t('detailProfileDrawerClose')
+                          : t('detailProfileDrawerOpen')}
+                      </Text>
+                      <Text style={styles.profileMapToggleIcon}>
+                        {isElevationExpanded ? '-' : '+'}
+                      </Text>
+                    </Pressable>
                   </View>
 
                   {isElevationExpanded ? (
                     <View style={styles.profileDrawerContent}>
-                      <Text style={styles.profileDrawerInlineHint}>
-                        {t('detailProfileDrawerHint')}
-                      </Text>
                       <ElevationProfileChart
                         activePoint={activeProfilePoint}
-                        height={340}
+                        height={width < 680 ? 300 : 360}
                         onActivePointChange={handleActiveProfilePointChange}
                         points={insights.elevationProfile}
+                        routeDynamicsItems={insights.routeDynamics}
                       />
                     </View>
                   ) : null}
+
                 </View>
 
-                <View style={styles.dynamicsPanel}>
-                  <View style={styles.dynamicsHeader}>
-                    <Text style={styles.dynamicsTitle}>{t('detailDynamicsTitle')}</Text>
-                    <Text style={styles.dynamicsDescription}>{t('detailDynamicsDescription')}</Text>
-                  </View>
-                  <RouteDynamicsChart items={insights.routeDynamics} />
-                </View>
               </View>
+              ) : null}
             </View>
+
+            <TrailScenePreview
+              ascentMeters={hike.elevationGainMeters}
+              difficulty={insights.difficulty}
+              distanceMeters={hike.distanceMeters}
+              durationSeconds={hike.durationSeconds}
+              elevationProfile={insights.elevationProfile}
+              routeType={insights.routeType}
+            />
 
             {errorMessage ? (
               <View style={styles.bannerError}>
@@ -654,88 +699,129 @@ export default function HikeDetailScreen() {
               </View>
             ) : null}
 
-            <Section description={t('detailSignatureDescription')} title={t('detailSignatureTitle')}>
-              <View style={styles.factGrid}>
-                <FactCard label={t('factDescent')} value={formatElevation(insights.elevationLossMeters)} />
+            <View style={styles.signatureSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>{t('detailSignatureTitle')}</Text>
+                <Text style={styles.sectionDescription}>{t('detailSignatureDescription')}</Text>
+              </View>
+              <View style={styles.signatureGrid}>
+                <FactCard
+                  label={t('factDominantTerrain')}
+                  style={{ flexBasis: signatureCardBasis }}
+                  value={formatDominantTerrain(insights)}
+                />
+                <FactCard
+                  label={t('factDescent')}
+                  style={{ flexBasis: signatureCardBasis }}
+                  value={formatElevation(insights.elevationLossMeters)}
+                />
                 <FactCard
                   label={t('factLowestPoint')}
+                  style={{ flexBasis: signatureCardBasis }}
                   value={formatOptionalElevation(insights.lowestElevationMeters)}
                 />
                 <FactCard
                   label={t('factStartFinishGap')}
+                  style={{ flexBasis: signatureCardBasis }}
                   value={formatOptionalDistance(insights.startToFinishGapMeters)}
                 />
                 <FactCard
                   label={t('factClimbPerKilometer')}
+                  style={{ flexBasis: signatureCardBasis }}
                   value={formatMetersPerKilometer(insights.climbPerKilometerMeters)}
                 />
                 <FactCard
                   label={t('factSteepestClimb')}
+                  style={{ flexBasis: signatureCardBasis }}
                   value={formatGradePercent(insights.steepestClimbPercent)}
                 />
                 <FactCard
                   label={t('factSteepestDescent')}
+                  style={{ flexBasis: signatureCardBasis }}
                   value={formatGradePercent(insights.steepestDescentPercent)}
                 />
-                <FactCard
-                  label={t('factDominantTerrain')}
-                  value={formatDominantTerrain(insights)}
-                />
               </View>
-            </Section>
+            </View>
 
-            <Section description={t('detailPosterDescription')} title={t('detailPosterTitle')}>
-              <View style={styles.exportPanel}>
-                <View
-                  collapsable={false}
-                  nativeID="hike-summary-poster"
-                  ref={posterRef}
-                  style={styles.posterFrame}
-                >
-                  <HikeSummaryPoster hike={hike} insights={insights} />
+            <View style={styles.section}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ expanded: isPosterExpanded }}
+                onPress={() => setIsPosterExpanded((value) => !value)}
+                style={({ pressed }) => [
+                  styles.posterCollapseHeader,
+                  pressed && styles.posterCollapseHeaderPressed,
+                ]}
+              >
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>{t('detailPosterTitle')}</Text>
+                  <Text style={styles.sectionDescription}>{t('detailPosterDescription')}</Text>
                 </View>
+                <Text style={styles.posterCollapseIcon}>{isPosterExpanded ? '-' : '+'}</Text>
+              </Pressable>
 
-                <View style={styles.exportHeader}>
-                  <Text style={styles.exportEyebrow}>{t('detailPosterActionTitle')}</Text>
-                  <Text style={styles.exportLead}>{t('detailPosterActionBody')}</Text>
-                  <Text style={styles.exportNote}>
-                    {Platform.OS === 'web'
-                      ? t('detailPosterActionWebHint')
-                      : t('detailPosterActionNativeHint')}
-                  </Text>
-                </View>
+              {isPosterExpanded ? (
+                <View style={styles.exportPanel}>
+                  <View
+                    collapsable={false}
+                    nativeID="hike-summary-poster"
+                    ref={posterRef}
+                    style={styles.posterFrame}
+                  >
+                    <HikeSummaryPoster hike={hike} insights={insights} />
+                  </View>
 
-                <View style={styles.exportHighlights}>
-                  <InlineFactPill label={t('factDistance')} value={formatDistance(hike.distanceMeters)} />
-                  <InlineFactPill
-                    label={t('factHighestPoint')}
-                    value={formatOptionalElevation(insights.highestElevationMeters)}
-                  />
-                  <InlineFactPill label={t('factAscent')} value={formatElevation(hike.elevationGainMeters)} />
-                </View>
+                  <View style={styles.exportHeader}>
+                    <Text style={styles.exportEyebrow}>{t('detailPosterActionTitle')}</Text>
+                    <Text style={styles.exportLead}>{t('detailPosterActionBody')}</Text>
+                    <Text style={styles.exportNote}>
+                      {Platform.OS === 'web'
+                        ? t('detailPosterActionWebHint')
+                        : t('detailPosterActionNativeHint')}
+                    </Text>
+                  </View>
 
-                <View style={styles.actionRow}>
-                  {Platform.OS !== 'web' ? (
+                  <View style={styles.exportHighlights}>
+                    <InlineFactPill label={t('factDistance')} value={formatDistance(hike.distanceMeters)} />
+                    <InlineFactPill
+                      label={t('factDuration')}
+                      value={formatDurationWithEstimate(hike.durationSeconds, {
+                        distanceMeters: hike.distanceMeters,
+                        elevationGainMeters: hike.elevationGainMeters,
+                        language,
+                        unavailableLabel: t('commonNotAvailable'),
+                      })}
+                    />
+                    <InlineFactPill
+                      label={t('factHighestPoint')}
+                      value={formatOptionalElevation(insights.highestElevationMeters)}
+                    />
+                    <InlineFactPill label={t('factAscent')} value={formatElevation(hike.elevationGainMeters)} />
+                  </View>
+
+                  <View style={styles.actionRow}>
+                    {Platform.OS !== 'web' ? (
+                      <ActionButton
+                        disabled={isSavingPoster || isSharingPoster}
+                        label={isSharingPoster ? t('detailSharingImage') : t('detailShareImage')}
+                        onPress={() => {
+                          void handleSharePoster();
+                        }}
+                        tone="primary"
+                      />
+                    ) : null}
                     <ActionButton
                       disabled={isSavingPoster || isSharingPoster}
-                      label={isSharingPoster ? t('detailSharingImage') : t('detailShareImage')}
+                      label={isSavingPoster ? t('detailSavingImage') : t('detailSaveImage')}
                       onPress={() => {
-                        void handleSharePoster();
+                        void handleSavePoster();
                       }}
-                      tone="primary"
+                      tone={Platform.OS === 'web' ? 'primary' : 'secondary'}
                     />
-                  ) : null}
-                  <ActionButton
-                    disabled={isSavingPoster || isSharingPoster}
-                    label={isSavingPoster ? t('detailSavingImage') : t('detailSaveImage')}
-                    onPress={() => {
-                      void handleSavePoster();
-                    }}
-                    tone={Platform.OS === 'web' ? 'primary' : 'secondary'}
-                  />
+                  </View>
                 </View>
-              </View>
-            </Section>
+              ) : null}
+            </View>
 
             <View style={styles.sourceFooter}>
               <Text style={styles.sourceLabel}>{t('detailSourceTitle')}</Text>
@@ -773,6 +859,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 44,
   },
+  contentCompact: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
   topMenuSection: {
     gap: 12,
   },
@@ -804,7 +894,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   topMenuLanguageOptionTextActive: {
-    color: '#F4FAF1',
+    color: palette.sandText,
   },
   loadingState: {
     alignItems: 'center',
@@ -813,7 +903,7 @@ const styles = StyleSheet.create({
   },
   hero: {
     backgroundColor: palette.panelRaised,
-    borderColor: '#D4DEC9',
+    borderColor: palette.border,
     borderRadius: 30,
     borderWidth: 1,
     gap: 18,
@@ -825,13 +915,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroTag: {
-    backgroundColor: '#E6EFEA',
+    backgroundColor: palette.inputBackground,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 7,
   },
   heroTagWarm: {
-    backgroundColor: '#DCE8D7',
+    backgroundColor: palette.highlightSoft,
   },
   heroTagText: {
     color: palette.accentStrong,
@@ -853,12 +943,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 34,
     fontWeight: '800',
     lineHeight: 40,
   },
   subtitle: {
     color: palette.textMuted,
+    flexShrink: 1,
     fontSize: 15,
     lineHeight: 24,
   },
@@ -873,12 +965,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   heroMetricCard: {
-    backgroundColor: '#F8FBF5',
-    borderColor: '#D4DEC9',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
     borderRadius: 22,
     borderWidth: 1,
     flexGrow: 1,
-    minWidth: '30%',
+    minWidth: 160,
     paddingHorizontal: 18,
     paddingVertical: 16,
   },
@@ -901,9 +993,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   inlineFactPill: {
-    backgroundColor: '#E7EFE0',
+    backgroundColor: palette.inputBackground,
     borderRadius: 18,
     gap: 4,
+    flexGrow: 1,
     minWidth: 112,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -931,7 +1024,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minHeight: 48,
     justifyContent: 'center',
-    minWidth: 156,
+    minWidth: 0,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -960,7 +1053,7 @@ const styles = StyleSheet.create({
     color: palette.sandText,
   },
   actionButtonTextSecondary: {
-    color: '#F4FBF6',
+    color: palette.sandText,
   },
   actionButtonTextGhost: {
     color: palette.text,
@@ -978,7 +1071,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   bannerText: {
-    color: '#F9FBF9',
+    color: palette.sandText,
     fontSize: 14,
     fontWeight: '600',
     lineHeight: 20,
@@ -1005,8 +1098,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   mapFrame: {
-    borderColor: '#D4DEC9',
-    borderRadius: 24,
+    borderColor: palette.border,
+    borderRadius: 22,
     borderWidth: 1,
     overflow: 'hidden',
   },
@@ -1021,12 +1114,62 @@ const styles = StyleSheet.create({
     top: 12,
   },
   analysisPanel: {
-    backgroundColor: '#EEF4E7',
-    borderColor: '#D4DEC9',
-    borderRadius: 26,
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
+    borderRadius: 28,
     borderWidth: 1,
     gap: 12,
-    padding: 12,
+    padding: 10,
+  },
+  routeExplorer: {
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderRadius: 24,
+    borderWidth: 1,
+    gap: 0,
+    overflow: 'hidden',
+  },
+  profileInstructionCard: {
+    alignItems: 'center',
+    backgroundColor: palette.panel,
+    borderBottomColor: palette.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  profileInstructionText: {
+    color: palette.textMuted,
+    flex: 1,
+    flexShrink: 1,
+    fontSize: 13,
+    lineHeight: 20,
+    minWidth: 220,
+  },
+  routeExplorerHandle: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#394139',
+    borderRadius: 999,
+    height: 34,
+    justifyContent: 'center',
+    marginBottom: -17,
+    marginTop: -17,
+    shadowColor: '#1F2B20',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 14,
+    width: 74,
+    zIndex: 2,
+  },
+  routeExplorerHandleIcon: {
+    color: palette.sandText,
+    fontSize: 24,
+    fontWeight: '500',
+    lineHeight: 28,
   },
   profileMapToggle: {
     alignItems: 'center',
@@ -1038,10 +1181,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 14,
     justifyContent: 'space-between',
-    maxWidth: 320,
-    minWidth: 220,
+    maxWidth: '100%',
+    minWidth: 0,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   profileMapToggleActive: {
     backgroundColor: 'rgba(232, 241, 228, 0.97)',
@@ -1069,13 +1212,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   profileDrawerContent: {
-    backgroundColor: '#F7FBF4',
-    borderColor: '#D4DEC9',
-    borderRadius: 22,
-    borderWidth: 1,
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    backgroundColor: palette.panel,
+    borderBottomColor: palette.border,
+    borderBottomWidth: 1,
+    padding: 12,
   },
   profileDrawerInlineHint: {
     color: palette.textMuted,
@@ -1083,8 +1223,8 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   dynamicsPanel: {
-    backgroundColor: '#F7FBF4',
-    borderColor: '#D4DEC9',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
     borderRadius: 22,
     borderWidth: 1,
     gap: 12,
@@ -1108,11 +1248,31 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
   },
+  signatureSection: {
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
+    borderRadius: 30,
+    borderWidth: 1,
+    gap: 16,
+    overflow: 'hidden',
+    padding: 20,
+    shadowColor: '#A85C1F',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+  },
+  signatureGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
   factCard: {
-    backgroundColor: '#F8FBF5',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 20,
     flexGrow: 1,
-    minWidth: '46%',
+    minWidth: 0,
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
@@ -1131,11 +1291,34 @@ const styles = StyleSheet.create({
   },
   exportPanel: {
     backgroundColor: palette.panelRaised,
-    borderColor: '#D4DEC9',
+    borderColor: palette.border,
     borderRadius: 24,
     borderWidth: 1,
     gap: 16,
     padding: 18,
+  },
+  posterCollapseHeader: {
+    alignItems: 'flex-start',
+    borderRadius: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+    justifyContent: 'space-between',
+    marginHorizontal: -6,
+    marginTop: -6,
+    padding: 6,
+  },
+  posterCollapseHeaderPressed: {
+    backgroundColor: 'rgba(47, 77, 58, 0.06)',
+    transform: [{ scale: 0.995 }],
+  },
+  posterCollapseIcon: {
+    color: palette.accentStrong,
+    fontSize: 24,
+    fontWeight: '900',
+    lineHeight: 26,
+    minWidth: 26,
+    textAlign: 'center',
   },
   exportHeader: {
     gap: 8,
@@ -1149,6 +1332,7 @@ const styles = StyleSheet.create({
   },
   exportLead: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 20,
     fontWeight: '800',
     lineHeight: 28,
@@ -1171,7 +1355,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   sourceFooter: {
-    backgroundColor: '#E7EFE0',
+    backgroundColor: palette.inputBackground,
     borderColor: palette.border,
     borderRadius: 22,
     borderWidth: 1,
@@ -1186,6 +1370,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   sourceValue: {
+    flexShrink: 1,
     color: palette.text,
     fontSize: 14,
     lineHeight: 22,

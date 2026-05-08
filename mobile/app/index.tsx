@@ -10,18 +10,24 @@ import {
   TextInput,
   useWindowDimensions,
   View,
+  type DimensionValue,
 } from 'react-native';
 
 import { AppTopBar } from '../src/components/AppTopBar';
 import { FeaturedHikeCard } from '../src/components/FeaturedHikeCard';
 import { HikeMap } from '../src/components/HikeMap';
 import { areHikeImportsEnabled, isReadOnlyMode } from '../src/lib/app-features';
-import { formatDateTime, formatDistance, formatDuration, formatElevation } from '../src/lib/format';
+import {
+  estimateHikingDurationSeconds,
+  formatDistance,
+  formatDuration,
+  formatDurationWithEstimate,
+  formatElevation,
+} from '../src/lib/format';
 import {
   getDifficultyLabel,
   getLanguageDisplayLabel,
   getRouteTypeLabel,
-  getSourceTypeLabel,
   useI18n,
 } from '../src/lib/i18n';
 import { importHikeFromUrl, pickAndImportHike } from '../src/lib/hike-import';
@@ -33,10 +39,19 @@ import {
   listHikes,
 } from '../src/lib/hikes-store';
 import { palette } from '../src/lib/theme';
-import type { AppLanguage, HikeRecord, HikeSummary } from '../src/types/hikes';
+import { useAppTheme } from '../src/lib/theme-context';
+import type {
+  AppLanguage,
+  DifficultyLevel,
+  HikeRecord,
+  HikeRouteType,
+  HikeSummary,
+} from '../src/types/hikes';
 
 type ImportAction = 'file' | 'url' | 'shared-link' | null;
 type PublishAction = 'export-feed' | null;
+type DifficultyFilter = 'all' | DifficultyLevel;
+type RouteTypeFilter = 'all' | HikeRouteType;
 
 function readSingleParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) {
@@ -65,7 +80,15 @@ function Metric({
         emphasize && styles.metricCardEmphasis,
       ]}
     >
-      <Text style={[styles.metricLabel, compact && styles.metricLabelCompact]}>{label}</Text>
+      <Text
+        style={[
+          styles.metricLabel,
+          compact && styles.metricLabelCompact,
+          emphasize && styles.metricLabelEmphasis,
+        ]}
+      >
+        {label}
+      </Text>
       <Text
         style={[
           styles.metricValue,
@@ -96,7 +119,8 @@ function InfoChip({
 export default function HomeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ importUrl?: string | string[] }>();
-  const { language, locale, setLanguage, t } = useI18n();
+  const { language, setLanguage, t } = useI18n();
+  const { colors } = useAppTheme();
   const { width } = useWindowDimensions();
   const importsEnabled = areHikeImportsEnabled();
   const readOnlyMode = isReadOnlyMode();
@@ -110,14 +134,14 @@ export default function HomeScreen() {
   const [activePublishAction, setActivePublishAction] = useState<PublishAction>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [filterQuery, setFilterQuery] = useState('');
+  const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all');
+  const [routeTypeFilter, setRouteTypeFilter] = useState<RouteTypeFilter>('all');
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
   const [isSnapshotExpanded, setIsSnapshotExpanded] = useState(() => width >= 680);
   const [isPending, startTransition] = useTransition();
   const lastImportedQueryRef = useRef<string | null>(null);
 
-  const selectedHike = useMemo(
-    () => hikeRecords.find((hike) => hike.id === selectedHikeId) ?? null,
-    [hikeRecords, selectedHikeId]
-  );
   const hikeInsightsById = useMemo(
     () =>
       Object.fromEntries(
@@ -125,18 +149,56 @@ export default function HomeScreen() {
       ) as Record<string, ReturnType<typeof getHikeInsights>>,
     [hikeRecords]
   );
+  const filteredHikeRecords = useMemo(() => {
+    const normalizedQuery = filterQuery.trim().toLowerCase();
+
+    return hikeRecords.filter((hike) => {
+      const insights = hikeInsightsById[hike.id];
+      const matchesQuery =
+        normalizedQuery.length === 0 ||
+        hike.title.toLowerCase().includes(normalizedQuery);
+      const matchesDifficulty =
+        difficultyFilter === 'all' || insights?.difficulty === difficultyFilter;
+      const matchesRouteType = routeTypeFilter === 'all' || insights?.routeType === routeTypeFilter;
+
+      return matchesQuery && matchesDifficulty && matchesRouteType;
+    });
+  }, [difficultyFilter, filterQuery, hikeInsightsById, hikeRecords, routeTypeFilter]);
+  const filteredHikes = useMemo(
+    () => hikes.filter((hike) => filteredHikeRecords.some((record) => record.id === hike.id)),
+    [filteredHikeRecords, hikes]
+  );
+  const selectedHike = useMemo(
+    () => filteredHikeRecords.find((hike) => hike.id === selectedHikeId) ?? null,
+    [filteredHikeRecords, selectedHikeId]
+  );
   const selectedHikeInsights = selectedHike ? hikeInsightsById[selectedHike.id] ?? null : null;
   const isCompactSnapshotOverlay = width < 960;
   const isMobileSnapshotOverlay = width < 680;
   const mobileSnapshotWidth = Math.min(Math.max(width * 0.56, 176), 228);
+  const hikeGridColumnCount = width >= 1180 ? 3 : width >= 760 ? 2 : 1;
+  const hikeCardBasis: DimensionValue =
+    hikeGridColumnCount === 1 ? '100%' : `${(100 - (hikeGridColumnCount - 1) * 1.6) / hikeGridColumnCount}%`;
+  const filterControlBasis: DimensionValue = width >= 980 ? '31.8%' : width >= 720 ? '48%' : '100%';
 
   const overviewMetrics = useMemo(() => {
-    const totalDistanceMeters = hikeRecords.reduce((total, hike) => total + hike.distanceMeters, 0);
-    const totalAscentMeters = hikeRecords.reduce(
+    const totalDistanceMeters = filteredHikeRecords.reduce(
+      (total, hike) => total + hike.distanceMeters,
+      0
+    );
+    const totalDurationSeconds = filteredHikeRecords.reduce((total, hike) => {
+      const durationSeconds =
+        hike.durationSeconds ??
+        estimateHikingDurationSeconds(hike.distanceMeters, hike.elevationGainMeters) ??
+        0;
+
+      return total + durationSeconds;
+    }, 0);
+    const totalAscentMeters = filteredHikeRecords.reduce(
       (total, hike) => total + hike.elevationGainMeters,
       0
     );
-    const highestPointMeters = hikeRecords.reduce<number | null>((highestPoint, hike) => {
+    const highestPointMeters = filteredHikeRecords.reduce<number | null>((highestPoint, hike) => {
       const candidate = hikeInsightsById[hike.id]?.highestElevationMeters ?? null;
 
       if (candidate === null) {
@@ -152,10 +214,11 @@ export default function HomeScreen() {
 
     return {
       totalDistanceMeters,
+      totalDurationSeconds,
       totalAscentMeters,
       highestPointMeters,
     };
-  }, [hikeInsightsById, hikeRecords]);
+  }, [filteredHikeRecords, hikeInsightsById]);
 
   const getFallbackError = () => t('homeError');
 
@@ -210,8 +273,16 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    setVisibleHikeCount(hikeRecords.length);
-  }, [hikeRecords.length]);
+    setVisibleHikeCount(filteredHikeRecords.length);
+  }, [filteredHikeRecords.length]);
+
+  useEffect(() => {
+    if (selectedHikeId !== null && filteredHikeRecords.some((hike) => hike.id === selectedHikeId)) {
+      return;
+    }
+
+    setSelectedHikeId(filteredHikeRecords[0]?.id ?? null);
+  }, [filteredHikeRecords, selectedHikeId]);
 
   useEffect(() => {
     setIsSnapshotExpanded(!isMobileSnapshotOverlay);
@@ -327,13 +398,16 @@ export default function HomeScreen() {
     });
   };
 
-  const formatLocalizedDateTime = (value: string | null) =>
-    formatDateTime(value, {
-      locale,
-      unavailableLabel: t('commonNotAvailable'),
-    });
-
   const englishPluralSuffix = (count: number) => (count === 1 ? '' : 's');
+  const filtersActive =
+    filterQuery.trim().length > 0 ||
+    difficultyFilter !== 'all' ||
+    routeTypeFilter !== 'all';
+  const clearFilters = () => {
+    setFilterQuery('');
+    setDifficultyFilter('all');
+    setRouteTypeFilter('all');
+  };
 
   const changeLanguage = async (nextLanguage: AppLanguage) => {
     if (nextLanguage === language) {
@@ -344,7 +418,10 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={[styles.screen, { backgroundColor: colors.background }]}
+        contentContainerStyle={[styles.content, width < 680 && styles.contentCompact]}
+      >
       <AppTopBar
         menuContent={
           <>
@@ -506,12 +583,12 @@ export default function HomeScreen() {
           <View style={styles.loadingState}>
             <ActivityIndicator color={palette.accentStrong} />
           </View>
-        ) : hikeRecords.length > 0 ? (
+        ) : filteredHikeRecords.length > 0 ? (
           <>
             <View style={styles.mapStage}>
               <HikeMap
                 height={620}
-                hikes={hikeRecords}
+                hikes={filteredHikeRecords}
                 onVisibleHikeCountChange={setVisibleHikeCount}
                 onSelectHike={setSelectedHikeId}
                 selectedHikeId={selectedHikeId}
@@ -531,14 +608,18 @@ export default function HomeScreen() {
                 ]}
               >
                 {isSnapshotExpanded ? (
-                  <View
-                    pointerEvents="box-none"
-                    style={[
+                  <Pressable
+                    accessibilityLabel={t('homeCollectionSnapshotHide')}
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: true }}
+                    onPress={() => setIsSnapshotExpanded(false)}
+                    style={({ pressed }) => [
                       styles.heroSnapshot,
                       isCompactSnapshotOverlay
                         ? styles.heroSnapshotCompact
                         : styles.heroSnapshotWide,
                       isMobileSnapshotOverlay && styles.heroSnapshotMobile,
+                      pressed && styles.heroSnapshotPressed,
                     ]}
                   >
                     <View
@@ -563,25 +644,21 @@ export default function HomeScreen() {
                             isMobileSnapshotOverlay && styles.heroSnapshotMetaCompact,
                           ]}
                         >
-                          {visibleHikeCount} | {formatDistance(overviewMetrics.totalDistanceMeters)}
+                          {visibleHikeCount} | {formatDistance(overviewMetrics.totalDistanceMeters)} |{' '}
+                          {formatDuration(overviewMetrics.totalDurationSeconds, {
+                            language,
+                            unavailableLabel: t('commonNotAvailable'),
+                          })}
                         </Text>
                       </View>
 
-                      <Pressable
-                        accessibilityLabel={t('homeCollectionSnapshotHide')}
-                        accessibilityRole="button"
-                        accessibilityState={{ expanded: true }}
-                        onPress={() => setIsSnapshotExpanded(false)}
-                        style={({ pressed }) => [
-                          styles.snapshotToggleButton,
-                          styles.snapshotToggleButtonExpanded,
-                          pressed && styles.snapshotToggleButtonPressed,
-                        ]}
+                      <View
+                        style={[styles.snapshotToggleButton, styles.snapshotToggleButtonExpanded]}
                       >
                         <Text style={[styles.snapshotToggleIcon, styles.snapshotToggleIconExpanded]}>
                           -
                         </Text>
-                      </Pressable>
+                      </View>
                     </View>
 
                     <View
@@ -596,6 +673,15 @@ export default function HomeScreen() {
                         emphasize
                         label={t('homeTracksShown')}
                         value={String(visibleHikeCount)}
+                      />
+                      <Metric
+                        compact={isMobileSnapshotOverlay}
+                        emphasize
+                        label={t('homeTotalDuration')}
+                        value={formatDuration(overviewMetrics.totalDurationSeconds, {
+                          language,
+                          unavailableLabel: t('commonNotAvailable'),
+                        })}
                       />
                       <Metric
                         compact={isMobileSnapshotOverlay}
@@ -617,7 +703,7 @@ export default function HomeScreen() {
                         }
                       />
                     </View>
-                  </View>
+                  </Pressable>
                 ) : (
                   <Pressable
                     accessibilityLabel={t('homeCollectionSnapshotShow')}
@@ -630,6 +716,15 @@ export default function HomeScreen() {
                       pressed && styles.snapshotToggleButtonPressed,
                     ]}
                   >
+                    <View style={styles.snapshotCollapsedCopy}>
+                      <Text style={styles.snapshotCollapsedEyebrow}>{t('homeCollectionSnapshot')}</Text>
+                      <Text numberOfLines={2} style={styles.snapshotCollapsedMeta}>
+                        {visibleHikeCount} | {formatDuration(overviewMetrics.totalDurationSeconds, {
+                          language,
+                          unavailableLabel: t('commonNotAvailable'),
+                        })}
+                      </Text>
+                    </View>
                     <Text style={styles.snapshotToggleIcon}>+</Text>
                   </Pressable>
                 )}
@@ -675,8 +770,12 @@ export default function HomeScreen() {
           </>
         ) : (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyStateTitle}>{t('homeNoHikesTitle')}</Text>
-            <Text style={styles.emptyStateBody}>{t('homeNoHikesBody')}</Text>
+            <Text style={styles.emptyStateTitle}>
+              {hikeRecords.length === 0 ? t('homeNoHikesTitle') : t('homeFilterTitle')}
+            </Text>
+            <Text style={styles.emptyStateBody}>
+              {hikeRecords.length === 0 ? t('homeNoHikesBody') : t('homeFilterEmpty')}
+            </Text>
           </View>
         )}
       </View>
@@ -688,9 +787,10 @@ export default function HomeScreen() {
             <Text style={styles.panelSubtle}>
               {hikes.length === 0
                 ? t('homeSavedHikesEmpty')
-                : t('homeSavedHikesCount', {
-                    count: hikes.length,
-                    suffix: englishPluralSuffix(hikes.length),
+                : t('homeFilterResults', {
+                    count: filteredHikes.length,
+                    total: hikes.length,
+                    suffix: englishPluralSuffix(filteredHikes.length),
                   })}
             </Text>
           </View>
@@ -698,58 +798,203 @@ export default function HomeScreen() {
           {isPending ? <Text style={styles.pendingText}>{t('commonRefreshing')}</Text> : null}
         </View>
 
-        {hikes.map((hike) => {
-          const isSelected = hike.id === selectedHikeId;
-          const insights = hikeInsightsById[hike.id];
+        {hikes.length > 0 ? (
+        <View style={styles.filterPanel}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded: filtersExpanded }}
+            onPress={() => setFiltersExpanded((value) => !value)}
+            style={({ pressed }) => [
+              styles.filterHeaderRow,
+              pressed && styles.filterHeaderRowPressed,
+            ]}
+          >
+            <View style={styles.panelHeaderCopy}>
+              <Text style={styles.filterTitle}>{t('homeFilterTitle')}</Text>
+              <Text style={styles.panelSubtle}>
+                {t('homeFilterResults', {
+                  count: filteredHikes.length,
+                  total: hikes.length,
+                  suffix: englishPluralSuffix(filteredHikes.length),
+                })}
+              </Text>
+            </View>
 
-          return (
-            <Pressable
-              key={hike.id}
-              accessibilityRole="button"
-              onPress={() => setSelectedHikeId(hike.id)}
-              style={({ pressed }) => [
-                styles.hikeCard,
-                isSelected && styles.hikeCardSelected,
-                pressed && styles.hikeCardPressed,
-              ]}
-            >
-              <View style={styles.hikeCardHeader}>
-                <View style={styles.hikeCardTextGroup}>
-                  <Text style={styles.hikeCardTitle}>{hike.title}</Text>
-                  <Text style={styles.hikeCardMeta}>
-                    {formatLocalizedDateTime(hike.startedAt)} | {getSourceTypeLabel(hike.sourceType, t)}
-                  </Text>
-                  {insights ? (
-                    <View style={styles.hikeCardChips}>
-                      <InfoChip
-                        accent={isSelected}
-                        label={getDifficultyLabel(insights.difficulty, t)}
-                      />
-                      <InfoChip label={getRouteTypeLabel(insights.routeType, t)} />
+            <View style={styles.filterHeaderActions}>
+              {filtersActive ? (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={clearFilters}
+                  style={({ pressed }) => [
+                    styles.clearFilterButton,
+                    pressed && styles.clearFilterButtonPressed,
+                  ]}
+                >
+                  <Text style={styles.clearFilterButtonText}>{t('commonClear')}</Text>
+                </Pressable>
+              ) : null}
+
+              <View
+                style={[
+                  styles.filterToggleButton,
+                  filtersExpanded && styles.filterToggleButtonActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.filterToggleButtonText,
+                    filtersExpanded && styles.filterToggleButtonTextActive,
+                  ]}
+                >
+                  {filtersExpanded ? t('homeFilterHide') : t('homeFilterShow')}
+                </Text>
+                <Text
+                  style={[
+                    styles.filterToggleIcon,
+                    filtersExpanded && styles.filterToggleIconActive,
+                  ]}
+                >
+                  {filtersExpanded ? '-' : '+'}
+                </Text>
+              </View>
+            </View>
+          </Pressable>
+
+          {filtersExpanded ? (
+            <View style={styles.filterControlsGrid}>
+              <View style={[styles.filterSearchGroup, { flexBasis: filterControlBasis }]}>
+                <Text style={styles.fieldLabel}>{t('homeFilterSearchLabel')}</Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onChangeText={setFilterQuery}
+                  placeholder={t('homeFilterSearchPlaceholder')}
+                  placeholderTextColor={palette.textMuted}
+                  style={styles.filterInput}
+                  value={filterQuery}
+                />
+              </View>
+
+              <View style={[styles.filterGroup, { flexBasis: filterControlBasis }]}>
+                <Text style={styles.fieldLabel}>{t('homeFilterDifficultyLabel')}</Text>
+                <View style={styles.filterChipRow}>
+                  {(['all', 'Easy', 'Moderate', 'Hard'] as DifficultyFilter[]).map((option) => (
+                    <Pressable
+                      key={option}
+                      accessibilityRole="button"
+                      onPress={() => setDifficultyFilter(option)}
+                      style={({ pressed }) => [
+                        styles.filterChip,
+                        difficultyFilter === option && styles.filterChipActive,
+                        pressed && styles.filterChipPressed,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.filterChipText,
+                          difficultyFilter === option && styles.filterChipTextActive,
+                        ]}
+                      >
+                        {option === 'all' ? t('commonAll') : getDifficultyLabel(option, t)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              <View style={[styles.filterGroup, { flexBasis: filterControlBasis }]}>
+                <Text style={styles.fieldLabel}>{t('homeFilterRouteTypeLabel')}</Text>
+                <View style={styles.filterChipRow}>
+                  {(['all', 'loop', 'pointToPoint'] as RouteTypeFilter[]).map((option) => (
+                    <Pressable
+                      key={option}
+                      accessibilityRole="button"
+                      onPress={() => setRouteTypeFilter(option)}
+                      style={({ pressed }) => [
+                        styles.filterChip,
+                        routeTypeFilter === option && styles.filterChipActive,
+                        pressed && styles.filterChipPressed,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.filterChipText,
+                          routeTypeFilter === option && styles.filterChipTextActive,
+                        ]}
+                      >
+                        {option === 'all' ? t('commonAll') : getRouteTypeLabel(option, t)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            </View>
+          ) : null}
+
+        </View>
+        ) : null}
+
+        {hikes.length > 0 && filteredHikes.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateTitle}>{t('homeFilterTitle')}</Text>
+            <Text style={styles.emptyStateBody}>{t('homeFilterEmpty')}</Text>
+          </View>
+        ) : null}
+
+        <View style={styles.hikeGrid}>
+          {filteredHikes.map((hike) => {
+            const isSelected = hike.id === selectedHikeId;
+            const insights = hikeInsightsById[hike.id];
+
+            return (
+              <Pressable
+                key={hike.id}
+                accessibilityRole="button"
+                onPress={() => setSelectedHikeId(hike.id)}
+                style={({ pressed }) => [
+                  styles.hikeCard,
+                  { flexBasis: hikeCardBasis },
+                  isSelected && styles.hikeCardSelected,
+                  pressed && styles.hikeCardPressed,
+                ]}
+              >
+                <View style={styles.hikeCardHeader}>
+                  <View style={styles.hikeCardTextGroup}>
+                    <Text numberOfLines={3} style={styles.hikeCardTitle}>{hike.title}</Text>
+                    {insights ? (
+                      <View style={styles.hikeCardChips}>
+                        <InfoChip
+                          accent={isSelected}
+                          label={getDifficultyLabel(insights.difficulty, t)}
+                        />
+                        <InfoChip label={getRouteTypeLabel(insights.routeType, t)} />
+                      </View>
+                    ) : null}
+                  </View>
+
+                  {isSelected ? (
+                    <View style={styles.selectedBadge}>
+                      <Text style={styles.selectedBadgeText}>{t('commonSelected')}</Text>
                     </View>
                   ) : null}
                 </View>
 
-                {isSelected ? (
-                  <View style={styles.selectedBadge}>
-                    <Text style={styles.selectedBadgeText}>{t('commonSelected')}</Text>
-                  </View>
-                ) : null}
-              </View>
-
-              <View style={styles.hikeCardStats}>
-                <Text style={styles.hikeCardStat}>{formatDistance(hike.distanceMeters)}</Text>
-                <Text style={styles.hikeCardStat}>{formatElevation(hike.elevationGainMeters)}</Text>
-                <Text style={styles.hikeCardStat}>
-                  {formatDuration(hike.durationSeconds, {
-                    language,
-                    unavailableLabel: t('commonNotAvailable'),
-                  })}
-                </Text>
-              </View>
-            </Pressable>
-          );
-        })}
+                <View style={styles.hikeCardStats}>
+                  <Text style={styles.hikeCardStat}>{formatDistance(hike.distanceMeters)}</Text>
+                  <Text style={styles.hikeCardStat}>{formatElevation(hike.elevationGainMeters)}</Text>
+                  <Text style={styles.hikeCardStat}>
+                    {formatDurationWithEstimate(hike.durationSeconds, {
+                      distanceMeters: hike.distanceMeters,
+                      elevationGainMeters: hike.elevationGainMeters,
+                      language,
+                      unavailableLabel: t('commonNotAvailable'),
+                    })}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
     </ScrollView>
   );
@@ -766,9 +1011,13 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     gap: 16,
   },
+  contentCompact: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
   leadSection: {
     backgroundColor: palette.panelRaised,
-    borderColor: '#D3DEC8',
+    borderColor: palette.border,
     borderRadius: 32,
     borderWidth: 1,
     gap: 18,
@@ -792,11 +1041,13 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: palette.text,
     fontSize: 30,
+    flexShrink: 1,
     fontWeight: '800',
     lineHeight: 36,
   },
   heroBody: {
     color: palette.textMuted,
+    flexShrink: 1,
     fontSize: 15,
     lineHeight: 23,
   },
@@ -832,22 +1083,22 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   languageOptionTextActive: {
-    color: '#F5FBF7',
+    color: palette.sandText,
   },
   heroSnapshot: {
-    backgroundColor: 'rgba(246, 249, 241, 0.96)',
-    borderColor: '#CFDBC7',
-    borderRadius: 22,
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderRadius: 26,
     borderWidth: 1,
-    gap: 14,
-    padding: 16,
+    gap: 16,
+    padding: 18,
     shadowColor: '#112118',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.12,
+    shadowRadius: 28,
   },
   heroSnapshotWide: {
-    maxWidth: 360,
+    maxWidth: 420,
   },
   heroSnapshotCompact: {
     maxWidth: '100%',
@@ -857,6 +1108,10 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  heroSnapshotPressed: {
+    opacity: 0.94,
+    transform: [{ scale: 0.995 }],
   },
   heroSnapshotHeader: {
     alignItems: 'center',
@@ -874,8 +1129,8 @@ const styles = StyleSheet.create({
   },
   heroSnapshotTitle: {
     color: palette.text,
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
   },
   heroSnapshotTitleCompact: {
     fontSize: 14,
@@ -884,7 +1139,7 @@ const styles = StyleSheet.create({
   heroSnapshotMeta: {
     color: palette.textMuted,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   heroSnapshotMetaCompact: {
     fontSize: 11,
@@ -909,6 +1164,7 @@ const styles = StyleSheet.create({
   panelHeaderRow: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 12,
   },
@@ -917,6 +1173,7 @@ const styles = StyleSheet.create({
   },
   panelTitle: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 22,
     fontWeight: '700',
   },
@@ -924,6 +1181,147 @@ const styles = StyleSheet.create({
     color: palette.textMuted,
     fontSize: 15,
     lineHeight: 22,
+  },
+  filterPanel: {
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
+    borderRadius: 22,
+    borderWidth: 1,
+    gap: 14,
+    padding: 14,
+  },
+  filterHeaderRow: {
+    alignItems: 'flex-start',
+    borderRadius: 18,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
+    marginHorizontal: -4,
+    marginTop: -4,
+    padding: 4,
+  },
+  filterHeaderRowPressed: {
+    backgroundColor: 'rgba(47, 77, 58, 0.06)',
+    transform: [{ scale: 0.995 }],
+  },
+  filterHeaderActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'flex-end',
+    maxWidth: '100%',
+  },
+  filterTitle: {
+    color: palette.text,
+    fontSize: 17,
+    fontWeight: '800',
+  },
+  filterControlsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  filterSearchGroup: {
+    flexGrow: 1,
+    gap: 8,
+    minWidth: 0,
+  },
+  filterGroup: {
+    flexGrow: 1,
+    gap: 8,
+    minWidth: 0,
+  },
+  filterInput: {
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderRadius: 16,
+    borderWidth: 1,
+    color: palette.text,
+    fontSize: 15,
+    minHeight: 50,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  filterChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterChip: {
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  filterChipActive: {
+    backgroundColor: palette.accentStrong,
+    borderColor: palette.accentStrong,
+  },
+  filterChipPressed: {
+    opacity: 0.84,
+  },
+  filterChipText: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  filterChipTextActive: {
+    color: palette.sandText,
+  },
+  clearFilterButton: {
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  clearFilterButtonPressed: {
+    opacity: 0.84,
+  },
+  clearFilterButtonText: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  filterToggleButton: {
+    alignItems: 'center',
+    backgroundColor: palette.inputBackground,
+    borderColor: palette.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  filterToggleButtonActive: {
+    backgroundColor: palette.accentStrong,
+    borderColor: palette.accentStrong,
+  },
+  filterToggleButtonPressed: {
+    opacity: 0.86,
+  },
+  filterToggleButtonText: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  filterToggleButtonTextActive: {
+    color: palette.sandText,
+  },
+  filterToggleIcon: {
+    color: palette.accentStrong,
+    fontSize: 16,
+    fontWeight: '900',
+    lineHeight: 16,
+  },
+  filterToggleIconActive: {
+    color: palette.sandText,
   },
   panelSubtle: {
     color: palette.textMuted,
@@ -975,7 +1373,7 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   secondaryButtonText: {
-    color: '#F4FBF6',
+    color: palette.sandText,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -1026,7 +1424,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   bannerText: {
-    color: '#F7FBF8',
+    color: palette.sandText,
     fontSize: 14,
     fontWeight: '600',
     lineHeight: 20,
@@ -1055,21 +1453,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   metricCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 18,
     flexGrow: 1,
-    minWidth: '47%',
+    minWidth: 120,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   metricCardCompact: {
     borderRadius: 14,
-    minWidth: '46%',
+    minWidth: 96,
     paddingHorizontal: 10,
     paddingVertical: 9,
   },
   metricCardEmphasis: {
-    backgroundColor: palette.highlightSoft,
+    backgroundColor: palette.highlight,
+    borderColor: palette.highlight,
   },
   metricLabel: {
     color: palette.textMuted,
@@ -1080,6 +1481,9 @@ const styles = StyleSheet.create({
   metricLabelCompact: {
     fontSize: 9,
     lineHeight: 12,
+  },
+  metricLabelEmphasis: {
+    color: palette.sandText,
   },
   metricValue: {
     color: palette.text,
@@ -1093,7 +1497,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   metricValueEmphasis: {
-    color: palette.highlightText,
+    color: palette.sandText,
   },
   selectedRouteFallback: {
     color: palette.textMuted,
@@ -1102,7 +1506,7 @@ const styles = StyleSheet.create({
   },
   infoChip: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E8EFE1',
+    backgroundColor: palette.inputBackground,
     borderColor: palette.border,
     borderRadius: 999,
     borderWidth: 1,
@@ -1150,41 +1554,58 @@ const styles = StyleSheet.create({
   },
   snapshotToggleButton: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
     borderWidth: 1,
     justifyContent: 'center',
   },
   snapshotToggleButtonExpanded: {
-    backgroundColor: palette.accentStrong,
-    borderColor: palette.accentStrong,
-    borderRadius: 12,
-    height: 34,
-    width: 34,
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderRadius: 999,
+    minHeight: 54,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   snapshotToggleButtonCollapsed: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(246, 249, 241, 0.96)',
-    borderColor: '#CFDBC7',
-    borderRadius: 18,
-    elevation: 3,
-    height: 46,
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderRadius: 999,
+    elevation: 4,
+    minHeight: 54,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     shadowColor: '#112118',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 14,
-    width: 46,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
   },
   snapshotToggleButtonPressed: {
-    opacity: 0.84,
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
   },
   snapshotToggleIcon: {
     color: palette.accentStrong,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '800',
-    lineHeight: 24,
-    marginTop: -2,
+    lineHeight: 20,
   },
   snapshotToggleIconExpanded: {
-    color: '#F4FBF6',
+    color: palette.accentStrong,
+  },
+  snapshotCollapsedCopy: {
+    gap: 2,
+  },
+  snapshotCollapsedEyebrow: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  snapshotCollapsedMeta: {
+    color: palette.accent,
+    fontSize: 12,
+    fontWeight: '800',
   },
   mapViewBadgeOverlay: {
     position: 'absolute',
@@ -1192,22 +1613,24 @@ const styles = StyleSheet.create({
     top: 14,
   },
   mapViewBadge: {
-    backgroundColor: 'rgba(31, 43, 34, 0.88)',
+    backgroundColor: palette.panel,
+    borderColor: palette.border,
+    borderWidth: 1,
     borderRadius: 20,
     gap: 3,
-    maxWidth: 260,
+    maxWidth: 220,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   mapViewBadgeLabel: {
-    color: 'rgba(244, 250, 241, 0.82)',
+    color: palette.textMuted,
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.7,
     textTransform: 'uppercase',
   },
   mapViewBadgeValue: {
-    color: '#F8FBF9',
+    color: palette.text,
     fontSize: 13,
     fontWeight: '800',
     lineHeight: 18,
@@ -1258,16 +1681,23 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
+  hikeGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
   hikeCard: {
-    backgroundColor: '#F8FBF5',
+    backgroundColor: palette.panel,
     borderColor: palette.border,
     borderRadius: 22,
     borderWidth: 1,
+    flexGrow: 1,
     gap: 12,
+    minWidth: 0,
     padding: 16,
   },
   hikeCardSelected: {
-    backgroundColor: '#FFF7EE',
+    backgroundColor: palette.panelRaised,
     borderColor: palette.highlight,
   },
   hikeCardPressed: {
@@ -1276,22 +1706,20 @@ const styles = StyleSheet.create({
   hikeCardHeader: {
     alignItems: 'flex-start',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     justifyContent: 'space-between',
   },
   hikeCardTextGroup: {
     flex: 1,
     gap: 4,
+    minWidth: 0,
   },
   hikeCardTitle: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 18,
     fontWeight: '700',
-  },
-  hikeCardMeta: {
-    color: palette.textMuted,
-    fontSize: 13,
-    lineHeight: 20,
   },
   hikeCardChips: {
     flexDirection: 'row',
@@ -1306,7 +1734,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   selectedBadgeText: {
-    color: '#FFF9F2',
+    color: palette.sandText,
     fontSize: 12,
     fontWeight: '700',
   },

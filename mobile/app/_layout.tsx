@@ -2,18 +2,19 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { AppLanguageProvider, useI18n } from '../src/lib/i18n';
-import { palette } from '../src/lib/theme';
+import { AppThemeProvider, useAppTheme } from '../src/lib/theme-context';
 
 function RootNavigator() {
   const { t } = useI18n();
+  const { colors, resolvedTheme } = useAppTheme();
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: palette.background },
+          contentStyle: { backgroundColor: colors.background },
         }}
       >
         <Stack.Screen
@@ -35,8 +36,10 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <AppLanguageProvider>
-      <RootNavigator />
-    </AppLanguageProvider>
+    <AppThemeProvider>
+      <AppLanguageProvider>
+        <RootNavigator />
+      </AppLanguageProvider>
+    </AppThemeProvider>
   );
 }

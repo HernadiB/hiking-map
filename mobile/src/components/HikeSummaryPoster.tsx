@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { RoutePreviewGraphic } from './RoutePreviewGraphic';
-import { formatDistance, formatElevation } from '../lib/format';
+import { formatDistance, formatDurationWithEstimate, formatElevation } from '../lib/format';
 import { getDifficultyLabel, getRouteTypeLabel, useI18n } from '../lib/i18n';
 import { palette } from '../lib/theme';
 import type { HikeInsights, HikeRecord } from '../types/hikes';
@@ -43,7 +43,7 @@ export function HikeSummaryPoster({
   hike: HikeRecord;
   insights: HikeInsights;
 }) {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const elevationRangeLabel =
     insights.elevationRangeMeters === null
       ? t('commonNotAvailable')
@@ -81,6 +81,15 @@ export function HikeSummaryPoster({
 
       <View style={styles.highlightRow}>
         <PosterHighlight label={t('factDistance')} value={formatDistance(hike.distanceMeters)} />
+        <PosterHighlight
+          label={t('factDuration')}
+          value={formatDurationWithEstimate(hike.durationSeconds, {
+            distanceMeters: hike.distanceMeters,
+            elevationGainMeters: hike.elevationGainMeters,
+            language,
+            unavailableLabel: t('commonNotAvailable'),
+          })}
+        />
         <PosterHighlight label={t('factHighestPoint')} value={highestPointLabel} />
         <PosterHighlight label={t('factAscent')} value={formatElevation(hike.elevationGainMeters)} />
       </View>
@@ -92,6 +101,15 @@ export function HikeSummaryPoster({
       <View style={styles.grid}>
         <PosterStat label={t('factRouteType')} value={getRouteTypeLabel(insights.routeType, t)} />
         <PosterStat label={t('factDifficulty')} value={getDifficultyLabel(insights.difficulty, t)} />
+        <PosterStat
+          label={t('factDuration')}
+          value={formatDurationWithEstimate(hike.durationSeconds, {
+            distanceMeters: hike.distanceMeters,
+            elevationGainMeters: hike.elevationGainMeters,
+            language,
+            unavailableLabel: t('commonNotAvailable'),
+          })}
+        />
         <PosterStat label={t('factElevationRange')} value={elevationRangeLabel} />
         <PosterStat label={t('factDescent')} value={formatElevation(insights.elevationLossMeters)} />
         <PosterStat label={t('factHighestPoint')} value={highestPointLabel} />
@@ -104,8 +122,8 @@ export function HikeSummaryPoster({
 
 const styles = StyleSheet.create({
   poster: {
-    backgroundColor: '#F2F7EC',
-    borderColor: '#D1DDC5',
+    backgroundColor: palette.panelRaised,
+    borderColor: palette.border,
     borderRadius: 28,
     borderWidth: 1,
     gap: 18,
@@ -114,11 +132,12 @@ const styles = StyleSheet.create({
   topRow: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 12,
   },
   brandChip: {
-    backgroundColor: '#E4EFE9',
+    backgroundColor: palette.inputBackground,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -131,13 +150,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   routeChip: {
-    backgroundColor: '#DDE9D8',
+    backgroundColor: palette.highlightSoft,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   routeChipText: {
-    color: palette.accent,
+    color: palette.highlightText,
     fontSize: 11,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -150,6 +169,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 30,
     fontWeight: '800',
     lineHeight: 36,
@@ -165,10 +185,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   highlight: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.panel,
     borderRadius: 18,
     flexGrow: 1,
-    minWidth: '30%',
+    minWidth: 150,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -186,7 +206,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   previewFrame: {
-    backgroundColor: '#E6EEDF',
+    backgroundColor: palette.inputBackground,
     borderRadius: 24,
     overflow: 'hidden',
     padding: 12,
@@ -197,9 +217,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   stat: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.panel,
     borderRadius: 18,
-    minWidth: '31%',
+    flexGrow: 1,
+    minWidth: 150,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -211,6 +232,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: palette.text,
+    flexShrink: 1,
     fontSize: 16,
     fontWeight: '700',
     marginTop: 4,

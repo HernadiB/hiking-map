@@ -6,7 +6,7 @@ import {
   calculateElevationGainMeters,
   getBounds,
 } from './geo';
-import type { HikeDraft, HikePoint, HikeSourceType } from '../types/hikes';
+import type { HikeDraft, HikePoint, HikeSourceType, RouteSurfaceType } from '../types/hikes';
 
 type GpxParseOptions = {
   fallbackTitle: string;
@@ -31,6 +31,91 @@ function asString(value: unknown): string | null {
   return trimmedValue.length > 0 ? trimmedValue : null;
 }
 
+function normalizeSurfaceType(value: string | null): RouteSurfaceType | null {
+  if (!value) {
+    return null;
+  }
+
+  const normalizedValue = value.toLowerCase().replace(/[_-]+/g, ' ');
+
+  if (/(asphalt|tarmac|bitumen)/.test(normalizedValue)) {
+    return 'asphalt';
+  }
+
+  if (/(paved|concrete|cobblestone|sett|paving)/.test(normalizedValue)) {
+    return 'paved';
+  }
+
+  if (/(gravel|fine gravel|pebble|compacted)/.test(normalizedValue)) {
+    return 'gravel';
+  }
+
+  if (/(dirt|earth|ground|soil|mud|unpaved)/.test(normalizedValue)) {
+    return 'dirt';
+  }
+
+  if (/(track|grade[1-5]|d[oó]zer)/.test(normalizedValue)) {
+    return 'track';
+  }
+
+  if (/(path|trail|footway|hiking)/.test(normalizedValue)) {
+    return 'path';
+  }
+
+  if (/(grass|meadow)/.test(normalizedValue)) {
+    return 'grass';
+  }
+
+  if (/(rock|stone|scree)/.test(normalizedValue)) {
+    return 'rock';
+  }
+
+  return null;
+}
+
+function findSurfaceLikeValue(node: unknown): string | null {
+  if (!node || typeof node !== 'object') {
+    return null;
+  }
+
+  for (const [rawKey, rawValue] of Object.entries(node as Record<string, unknown>)) {
+    const key = rawKey.toLowerCase();
+
+    if (
+      key.endsWith('surface') ||
+      key.endsWith('tracktype') ||
+      key.endsWith('highway') ||
+      key.endsWith('path') ||
+      key.endsWith('trail')
+    ) {
+      const value = asString(rawValue);
+
+      if (value) {
+        return value;
+      }
+    }
+
+    if (rawValue && typeof rawValue === 'object') {
+      const nestedValue = findSurfaceLikeValue(rawValue);
+
+      if (nestedValue) {
+        return nestedValue;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getSurfaceType(node: Record<string, unknown>): RouteSurfaceType | null {
+  return normalizeSurfaceType(
+    asString(node.surface) ??
+      asString(node.tracktype) ??
+      asString(node.highway) ??
+      findSurfaceLikeValue(node.extensions)
+  );
+}
+
 function formatFallbackTitle(value: string): string {
   const normalizedValue = value.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim();
   return normalizedValue || 'Imported hike';
@@ -51,6 +136,7 @@ function parseTrackPoint(node: Record<string, unknown>): HikePoint | null {
     longitude,
     elevationMeters: Number.isFinite(elevationValue) ? elevationValue : null,
     recordedAt: asString(node.time) ?? null,
+    surfaceType: getSurfaceType(node),
   };
 }
 

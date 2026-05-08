@@ -81,6 +81,44 @@ export function formatDuration(
   return `${hours} ${hourLabel} ${minutes} ${minuteLabel}`;
 }
 
+export function estimateHikingDurationSeconds(
+  distanceMeters: number,
+  elevationGainMeters: number
+): number | null {
+  if (distanceMeters <= 0) {
+    return null;
+  }
+
+  const flatWalkingSeconds = (distanceMeters / 1000 / 5) * 3600;
+  const ascentSeconds = (Math.max(0, elevationGainMeters) / 600) * 3600;
+  return Math.max(60, Math.round(flatWalkingSeconds + ascentSeconds));
+}
+
+export function formatDurationWithEstimate(
+  durationSeconds: number | null,
+  options: {
+    distanceMeters: number;
+    elevationGainMeters: number;
+    language?: AppLanguage;
+    unavailableLabel?: string;
+  }
+): string {
+  if (durationSeconds !== null) {
+    return formatDuration(durationSeconds, options);
+  }
+
+  const estimatedDurationSeconds = estimateHikingDurationSeconds(
+    options.distanceMeters,
+    options.elevationGainMeters
+  );
+
+  if (estimatedDurationSeconds === null) {
+    return options.unavailableLabel ?? 'Not available';
+  }
+
+  return formatDuration(estimatedDurationSeconds, options);
+}
+
 export function formatDateTime(
   value: string | null,
   options?: {

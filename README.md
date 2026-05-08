@@ -292,6 +292,14 @@ npm run build:web
 - repository formatting defaults are defined in `.editorconfig`
 - GitHub Actions runs type checking and a web export on push and pull requests
 
+## Branching and release workflow
+
+- `master` is the stable production branch and publishes the GitHub Pages site
+- `development` is the integration branch for new features before production
+- feature work should branch from `development`
+- pull requests into `development` must pass CI before merging
+- production updates should go from `development` to `master` only after manual review and successful CI
+
 ## Current implementation status
 
 - Expo Router navigation is in place

@@ -103,6 +103,7 @@ export function getHikeInsights(hike: HikeRecord): HikeInsights {
       latitude: firstElevationPoint!.latitude,
       longitude: firstElevationPoint!.longitude,
       sourcePointIndex: hike.points.findIndex((point) => point === firstElevationPoint),
+      surfaceType: firstElevationPoint!.surfaceType ?? null,
     });
   }
 
@@ -159,6 +160,7 @@ export function getHikeInsights(hike: HikeRecord): HikeInsights {
         latitude: current.latitude,
         longitude: current.longitude,
         sourcePointIndex: index,
+        surfaceType: current.surfaceType ?? previous.surfaceType ?? null,
       });
     }
   }
