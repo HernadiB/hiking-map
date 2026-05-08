@@ -1,7 +1,9 @@
 {
   "version": 2,
-  "updatedAt": "2026-05-06T17:50:19.7631793+02:00",
+  "updatedAt": "2026-05-08T09:45:04.4983925+02:00",
   "hikes": [
+    "gpx/16234191117ojx-ele-track.gpx",
+    "gpx/1728030966vb1p-ele-track.gpx",
     "gpx/t202500741_apc - apci tengerszem.gpx",
     "gpx/t22680751_hars-hegy koer ket.gpx",
     "gpx/t22690585_thirring-koerut.gpx",
