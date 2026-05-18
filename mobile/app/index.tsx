@@ -594,6 +594,7 @@ export default function HomeScreen() {
                 selectedHikeId={selectedHikeId}
                 showMarkers
                 showRoutePreview
+                useLightRouteColors
               />
 
               <View
