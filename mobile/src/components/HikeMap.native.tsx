@@ -14,7 +14,7 @@ import {
   getNearestHikeIdToCoordinate,
 } from '../lib/geo';
 import { useI18n } from '../lib/i18n';
-import { palette } from '../lib/theme';
+import { lightPalette, palette } from '../lib/theme';
 import type { RouteMapProps } from '../types/hikes';
 
 export function HikeMap({
@@ -29,6 +29,7 @@ export function HikeMap({
   onFocusedProfilePointChange,
   showRoutePreview = false,
   showVisibleCount = false,
+  useLightRouteColors = false,
 }: RouteMapProps) {
   const { t } = useI18n();
   const [previewedHikeId, setPreviewedHikeId] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export function HikeMap({
   const hasHikes = hikes.length > 0;
   const selectedHike = hasHikes ? hikes.find((hike) => hike.id === selectedHikeId) ?? hikes[0] : null;
   const previewedHike = hasHikes ? hikes.find((hike) => hike.id === previewedHikeId) ?? null : null;
+  const routeColors = useLightRouteColors ? lightPalette : palette;
   const fallbackPreviewHike = previewedHike ?? selectedHike;
   const region = useMemo(
     () => (hasHikes ? getMapRegion(getCombinedBounds(hikes)) : null),
@@ -103,6 +105,7 @@ export function HikeMap({
           hikes={hikes}
           height={height}
           selectedHikeId={selectedHike.id}
+          useLightRouteColors={useLightRouteColors}
         />
 
         <View pointerEvents="none" style={styles.fallbackNotice}>
@@ -180,7 +183,7 @@ export function HikeMap({
               {isSelected ? (
                 <Polyline
                   coordinates={coordinates}
-                  strokeColor={palette.highlightSoft}
+                  strokeColor={routeColors.highlightSoft}
                   strokeWidth={10}
                   tappable={false}
                   zIndex={2}
@@ -192,7 +195,7 @@ export function HikeMap({
                   syncFocusedProfilePoint(event.nativeEvent.coordinate);
                   onSelectHike?.(hike.id);
                 }}
-                strokeColor={isSelected ? palette.highlight : palette.routeBase}
+                strokeColor={isSelected ? routeColors.highlight : routeColors.routeBase}
                 strokeWidth={isSelected ? 6 : 3}
                 tappable={Boolean(onSelectHike || hasProfileSync)}
                 zIndex={isSelected ? 3 : 1}
@@ -218,7 +221,7 @@ export function HikeMap({
               latitude: endPoint.latitude,
               longitude: endPoint.longitude,
             }}
-            pinColor={palette.highlight}
+            pinColor={routeColors.highlight}
             title={t('commonFinish')}
           />
         ) : null}

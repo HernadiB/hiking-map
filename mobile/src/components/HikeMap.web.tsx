@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { HikeRoutePreviewCard } from './HikeRoutePreviewCard';
 import { countHikesInBounds, getNearestElevationProfilePoint } from '../lib/geo';
 import { useI18n } from '../lib/i18n';
-import { palette } from '../lib/theme';
+import { lightPalette, palette } from '../lib/theme';
 import type { HikeBounds, RouteMapProps } from '../types/hikes';
 
 export function HikeMap({
@@ -20,6 +20,7 @@ export function HikeMap({
   onFocusedProfilePointChange,
   showRoutePreview = false,
   showVisibleCount = false,
+  useLightRouteColors = false,
 }: RouteMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
@@ -37,6 +38,7 @@ export function HikeMap({
   const { t } = useI18n();
 
   const previewedHike = hikes.find((hike) => hike.id === previewedHikeId) ?? null;
+  const routeColors = useLightRouteColors ? lightPalette : palette;
   const englishPluralSuffix = visibleHikeCount === 1 ? '' : 's';
   const hasProfileSync = profilePoints.length > 0 && Boolean(onFocusedProfilePointChange);
 
@@ -237,7 +239,7 @@ export function HikeMap({
       );
       const selectionHalo = isSelected
         ? leaflet.polyline(coordinates, {
-            color: palette.highlightSoft,
+            color: routeColors.highlightSoft,
             interactive: false,
             lineCap: 'round',
             lineJoin: 'round',
@@ -247,7 +249,7 @@ export function HikeMap({
         : null;
 
       const polyline = leaflet.polyline(coordinates, {
-        color: isSelected ? palette.highlight : palette.routeBase,
+        color: isSelected ? routeColors.highlight : routeColors.routeBase,
         lineCap: 'round',
         lineJoin: 'round',
         opacity: isSelected ? 1 : 0.94,
@@ -315,7 +317,7 @@ export function HikeMap({
       const finishMarker = leaflet
         .circleMarker([finishPoint.latitude, finishPoint.longitude], {
           color: palette.sandText,
-          fillColor: palette.highlight,
+          fillColor: routeColors.highlight,
           fillOpacity: 1,
           radius: 8,
           weight: 3,
@@ -329,7 +331,7 @@ export function HikeMap({
     return () => {
       clearHoverTimer();
     };
-  }, [hikes, isMapReady, onSelectHike, selectedHikeId, showMarkers, showRoutePreview, t]);
+  }, [hikes, isMapReady, onSelectHike, selectedHikeId, showMarkers, showRoutePreview, t, useLightRouteColors]);
 
   useEffect(() => {
     const map = mapRef.current;

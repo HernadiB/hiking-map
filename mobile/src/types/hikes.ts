@@ -55,6 +55,7 @@ export type RouteMapProps = {
   height?: number;
   selectedHikeId?: string | null;
   showMarkers?: boolean;
+  useLightRouteColors?: boolean;
   showRoutePreview?: boolean;
   showVisibleCount?: boolean;
   focusedProfilePoint?: ElevationProfilePoint | null;

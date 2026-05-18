@@ -1,7 +1,7 @@
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 import { getCombinedBounds } from '../lib/geo';
-import { palette } from '../lib/theme';
+import { lightPalette, palette } from '../lib/theme';
 import type { ElevationProfilePoint, HikePoint, HikeRecord } from '../types/hikes';
 
 function projectPoint(
@@ -54,11 +54,13 @@ export function RouteCollectionPreviewGraphic({
   selectedHikeId = null,
   focusedProfilePoint = null,
   height = 220,
+  useLightRouteColors = false,
 }: {
   hikes: HikeRecord[];
   selectedHikeId?: string | null;
   focusedProfilePoint?: ElevationProfilePoint | null;
   height?: number;
+  useLightRouteColors?: boolean;
 }) {
   if (hikes.length === 0) {
     return null;
@@ -69,6 +71,7 @@ export function RouteCollectionPreviewGraphic({
   const padding = 64;
   const bounds = getCombinedBounds(hikes);
   const selectedHike = hikes.find((hike) => hike.id === selectedHikeId) ?? hikes[0];
+  const routeColors = useLightRouteColors ? lightPalette : palette;
   const guideLines = [140, 260, 380, 500];
   const projectedFocusedPoint = focusedProfilePoint
     ? projectPoint(focusedProfilePoint, bounds, viewBoxWidth, viewBoxHeight, padding)
@@ -154,7 +157,7 @@ export function RouteCollectionPreviewGraphic({
               d={projection.pathData}
               fill="none"
               opacity={0.98}
-              stroke={palette.highlightSoft}
+              stroke={routeColors.highlightSoft}
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={12}
@@ -165,7 +168,7 @@ export function RouteCollectionPreviewGraphic({
             d={projection.pathData}
             fill="none"
             opacity={isSelected ? 1 : 0.92}
-            stroke={isSelected ? palette.highlight : palette.routeBase}
+            stroke={isSelected ? routeColors.highlight : routeColors.routeBase}
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={isSelected ? 8 : 4}
@@ -192,7 +195,7 @@ export function RouteCollectionPreviewGraphic({
               <>
                 <Circle cx={projection.start.x} cy={projection.start.y} fill="#3A7A63" r="15" />
                 <Circle cx={projection.start.x} cy={projection.start.y} fill="#F6FBF8" r="7" />
-                <Circle cx={projection.finish.x} cy={projection.finish.y} fill={palette.highlight} r="15" />
+                <Circle cx={projection.finish.x} cy={projection.finish.y} fill={routeColors.highlight} r="15" />
                 <Circle cx={projection.finish.x} cy={projection.finish.y} fill="#FFF8EE" r="7" />
               </>
             );
